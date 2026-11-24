@@ -1,5 +1,10 @@
 ---
-import { SECTORS, getTripWhatsAppUrl, type Trip } from '../data/viagens';
+import {
+  SECTORS,
+  getTripShareUrl,
+  getTripWhatsAppUrl,
+  type Trip,
+} from '../data/viagens';
 
 interface Props {
   trip: Trip;
@@ -9,6 +14,8 @@ interface Props {
 const { trip, showSectorBadge = false } = Astro.props;
 const sector = SECTORS[trip.sector];
 const waUrl = getTripWhatsAppUrl(trip, 0);
+const shareUrl = getTripShareUrl(trip);
+const detailUrl = `/viagem/${trip.id}`;
 ---
 
 <article
@@ -16,16 +23,43 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
   data-sector={trip.sector}
   data-month={trip.month}
 >
-  <div class="trip-banner" style={`background: ${trip.gradient};`}>
+  <a href={detailUrl} class="trip-media" style={`background: ${trip.gradient};`} aria-label={`Ver detalhes de ${trip.title}`}>
+    <img
+      src={trip.image}
+      alt={`Destino ${trip.title}`}
+      loading="lazy"
+      decoding="async"
+      onerror="this.style.display='none'"
+    />
+    <div class="trip-media-overlay"></div>
+
     <div class="trip-banner-top">
-      <span class="trip-modality">{trip.modality} • {trip.destinationState}</span>
+      <span class="trip-modality">
+        {trip.modality === 'Aéreo' ? (
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          </svg>
+        ) : trip.modality === 'Bate-volta' ? (
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="12" rx="2"/>
+            <path d="M3 11h18M7 16v3M17 16v3"/>
+          </svg>
+        )}
+        {trip.modality} • {trip.destinationState}
+      </span>
       {trip.tag && <span class="trip-tag">{trip.tag}</span>}
     </div>
+
     <div class="trip-date-box">
-      <span class="trip-month">{trip.month}</span>
+      <span class="trip-month">{trip.month} • {trip.duration}</span>
       <strong class="trip-dates">{trip.dates}</strong>
     </div>
-  </div>
+  </a>
 
   <div class="trip-body">
     {showSectorBadge && (
@@ -33,7 +67,9 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
         {sector.shortTitle}
       </a>
     )}
-    <h3 class="trip-title">{trip.title}</h3>
+    <h3 class="trip-title">
+      <a href={detailUrl}>{trip.title}</a>
+    </h3>
     <p class="trip-summary">{trip.summary}</p>
 
     <ul class="trip-highlights">
@@ -54,6 +90,29 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
         </svg>
         Quero saber mais no WhatsApp
       </a>
+
+      <div class="trip-secondary-actions">
+        <a href={detailUrl} class="trip-detail-link">
+          Ver página do roteiro →
+        </a>
+        <a
+          href={shareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="trip-share-btn"
+          title="Compartilhar roteiro com família e amigos no WhatsApp"
+          aria-label={`Compartilhar ${trip.title} no WhatsApp`}
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          Indicar
+        </a>
+      </div>
     </div>
   </div>
 </article>
@@ -67,61 +126,97 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
   .trip-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
   }
 
-  .trip-banner {
-    padding: 1.25rem 1.35rem;
-    color: #ffffff;
+  .trip-media {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 132px;
+    aspect-ratio: 16 / 10;
+    min-height: 190px;
+    padding: 1rem 1.15rem;
+    color: #ffffff;
+    overflow: hidden;
+  }
+
+  .trip-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+    z-index: 0;
+  }
+
+  .trip-card:hover .trip-media img {
+    transform: scale(1.06);
+  }
+
+  .trip-media-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(11, 41, 66, 0.62) 0%,
+      rgba(11, 41, 66, 0.18) 45%,
+      rgba(11, 41, 66, 0.84) 100%
+    );
+    z-index: 1;
+  }
+
+  .trip-banner-top,
+  .trip-date-box {
     position: relative;
+    z-index: 2;
   }
 
   .trip-banner-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0.45rem;
     flex-wrap: wrap;
   }
 
   .trip-modality {
-    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background: rgba(255, 255, 255, 0.18);
-    padding: 0.25rem 0.65rem;
+    letter-spacing: 0.04em;
+    background: rgba(11, 41, 66, 0.72);
+    backdrop-filter: blur(4px);
+    padding: 0.28rem 0.68rem;
     border-radius: 999px;
   }
 
   .trip-tag {
-    font-size: 0.74rem;
+    font-size: 0.73rem;
     font-weight: 700;
     background: #ffffff;
     color: var(--sb-red);
     padding: 0.25rem 0.65rem;
     border-radius: 999px;
-  }
-
-  .trip-date-box {
-    margin-top: 1.15rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   }
 
   .trip-month {
     display: block;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    opacity: 0.88;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .trip-dates {
@@ -129,10 +224,11 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
     font-size: 1.15rem;
     font-weight: 800;
     letter-spacing: -0.01em;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   }
 
   .trip-body {
-    padding: 1.35rem;
+    padding: 1.3rem 1.35rem 1.25rem;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -147,7 +243,7 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
     background: var(--sb-blue-soft);
     padding: 0.22rem 0.65rem;
     border-radius: 999px;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.6rem;
   }
 
   .trip-title {
@@ -155,6 +251,10 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
     font-weight: 800;
     color: var(--sb-blue-deep);
     margin-bottom: 0.55rem;
+  }
+
+  .trip-title a:hover {
+    color: var(--sb-blue);
   }
 
   .trip-summary {
@@ -166,10 +266,10 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
   .trip-highlights {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.25rem;
+    margin: 0 0 1.2rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
+    gap: 0.42rem;
   }
 
   .trip-highlights li {
@@ -183,11 +283,51 @@ const waUrl = getTripWhatsAppUrl(trip, 0);
 
   .trip-footer {
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
   }
 
   .trip-wa-btn {
     width: 100%;
     font-size: 0.9rem;
     padding: 0.78rem 1rem;
+  }
+
+  .trip-secondary-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+
+  .trip-detail-link {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--sb-blue-dark);
+  }
+
+  .trip-detail-link:hover {
+    color: var(--sb-red);
+    text-decoration: underline;
+  }
+
+  .trip-share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--sb-muted);
+    background: #f1f5f9;
+    padding: 0.32rem 0.68rem;
+    border-radius: 999px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .trip-share-btn:hover {
+    background: var(--sb-blue-soft);
+    color: var(--sb-blue-dark);
   }
 </style>

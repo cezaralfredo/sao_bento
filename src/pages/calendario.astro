@@ -100,6 +100,23 @@ const waListUrl = getWhatsAppUrl(
     let currentSector = 'all';
     let currentMonth = 'all';
 
+    // Lê parâmetros da URL (vindos da barra de busca rápida da Home)
+    const params = new URLSearchParams(window.location.search);
+    const paramSector = params.get('setor');
+    const paramMonth = params.get('mes');
+
+    if (paramSector && sectorButtons.some((b) => b.dataset.filterSector === paramSector)) {
+      currentSector = paramSector;
+      sectorButtons.forEach((b) =>
+        b.classList.toggle('active', b.dataset.filterSector === currentSector)
+      );
+    }
+
+    if (paramMonth && monthSelect && Array.from(monthSelect.options).some((o) => o.value === paramMonth)) {
+      currentMonth = paramMonth;
+      monthSelect.value = currentMonth;
+    }
+
     function applyFilters() {
       let visible = 0;
       cards.forEach((card) => {
@@ -117,6 +134,8 @@ const waListUrl = getWhatsAppUrl(
         emptyState.hidden = visible > 0;
       }
     }
+
+    applyFilters();
 
     sectorButtons.forEach((btn) => {
       btn.addEventListener('click', () => {

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TripCard from './TripCard.astro';
+import HowItWorks from './HowItWorks.astro';
 import {
   SECTOR_LIST,
   getTripsBySector,
@@ -28,6 +29,13 @@ const sectorWaUrl = getWhatsAppUrl(
   currentPath={`/${sector.slug}`}
 >
   <section class="sector-hero" style={`background: ${sector.heroGradient};`}>
+    <img
+      src={sector.heroImage}
+      alt=""
+      class="sector-hero-bg"
+      aria-hidden="true"
+      onerror="this.style.display='none'"
+    />
     <div class="container">
       <span class="hero-eyebrow-light">{sector.eyebrow}</span>
       <h1>{sector.title}</h1>
@@ -75,7 +83,7 @@ const sectorWaUrl = getWhatsAppUrl(
         <span class="eyebrow">Agenda 2026 / 2027</span>
         <h2 class="section-title">Próximas saídas em {sector.title}</h2>
         <p class="section-subtitle">
-          Clique no botão verde do roteiro de seu interesse para conversar diretamente no WhatsApp com a nossa equipe e receber valores, inclusões e vagas.
+          Clique no botão verde para conversar direto no WhatsApp ou abra a página de cada roteiro para ver todos os detalhes e compartilhar com sua família.
         </p>
       </div>
 
@@ -86,6 +94,8 @@ const sectorWaUrl = getWhatsAppUrl(
       </div>
     </div>
   </section>
+
+  <HowItWorks />
 
   <section class="section">
     <div class="container">

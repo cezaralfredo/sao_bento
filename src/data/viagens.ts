@@ -12,6 +12,7 @@ export interface SectorInfo {
   tagline: string;
   description: string;
   heroGradient: string;
+  heroImage: string;
   badgeColor: string;
   highlights: string[];
   seoTitle: string;
@@ -26,6 +27,7 @@ export interface Trip {
   dates: string;
   month: string;
   monthOrder: number;
+  duration: string;
   sector: SectorSlug;
   modality: 'Bate-volta' | 'Rodoviário' | 'Aéreo';
   destinationState: string;
@@ -34,6 +36,7 @@ export interface Trip {
   summary: string;
   highlights: string[];
   gradient: string;
+  image: string;
 }
 
 export const COMPANY = {
@@ -44,6 +47,7 @@ export const COMPANY = {
   founders: 'Erivan e Odilene',
   slogan: 'Viajar é com a São Bento Turismo',
   historicalSlogan: 'Trabalhando Para Melhor Servir',
+  siteUrl: 'https://saobento.anauedesign.com.br',
   address: 'Rua Coronel Olegário Memória, 2495 — Sapiranga / Edson Queiroz, Fortaleza - CE',
   cep: '60833-045',
   phones: [
@@ -70,6 +74,12 @@ export function getTripWhatsAppUrl(trip: Trip, phoneIndex: 0 | 1 = 0): string {
   return getWhatsAppUrl(msg, phoneIndex);
 }
 
+export function getTripShareUrl(trip: Trip): string {
+  const url = `${COMPANY.siteUrl}/viagem/${trip.id}`;
+  const msg = `Olha essa viagem da São Bento Turismo saindo de Fortaleza: *${trip.title}* (${trip.dates} - ${trip.month})! Veja os detalhes aqui: ${url}`;
+  return `https://wa.me/?text=${encodeURIComponent(msg)}`;
+}
+
 export const SECTORS: Record<SectorSlug, SectorInfo> = {
   'passeios-ceara': {
     slug: 'passeios-ceara',
@@ -80,6 +90,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     description:
       'Descubra as praias mais belas e o clima acolhedor das serras do Ceará em excursões organizadas para famílias, casais, amigos e grupos da melhor idade.',
     heroGradient: 'linear-gradient(135deg, #0E4A73 0%, #1B7FC1 60%, #2AA0D8 100%)',
+    heroImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#1B7FC1',
     highlights: [
       'Saídas organizadas de Fortaleza com embarque facilitado',
@@ -103,6 +114,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     description:
       'Viagens de 3 a 6 dias com roteiro planejado, hospedagem selecionada e a animação de viajar em grupo pelos grandes clássicos nordestinos.',
     heroGradient: 'linear-gradient(135deg, #0B2942 0%, #1B7FC1 55%, #D91E2A 100%)',
+    heroImage: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#0E4A73',
     highlights: [
       'Saídas garantidas em datas comemorativas (Réveillon, Férias e Carnaval)',
@@ -126,6 +138,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     description:
       'As peregrinações fazem parte da nossa essência e da nossa razão social há 20 anos. Levamos fiéis, paróquias e famílias aos principais santuários do Nordeste e do Brasil.',
     heroGradient: 'linear-gradient(135deg, #7F1219 0%, #D91E2A 55%, #1B7FC1 100%)',
+    heroImage: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#D91E2A',
     highlights: [
       '20 anos de experiência em romarias, circuitos da fé e grupos paroquiais',
@@ -149,6 +162,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     description:
       'Do turismo cívico e grandes eventos nacionais a pacotes aéreos internacionais como a Tríplice Fronteira, cuidamos de cada detalhe para você viajar tranquilo.',
     heroGradient: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 55%, #1B7FC1 100%)',
+    heroImage: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#0F172A',
     highlights: [
       'Roteiros aéreos e nacionais com acompanhamento de grupo',
@@ -180,6 +194,7 @@ export const TRIPS: Trip[] = [
     dates: '20 a 22 de Novembro',
     month: 'Novembro 2026',
     monthOrder: 1,
+    duration: '3 dias',
     sector: 'passeios-ceara',
     modality: 'Rodoviário',
     destinationState: 'CE',
@@ -189,6 +204,7 @@ export const TRIPS: Trip[] = [
       'Aproveite o feriado no clima ameno do Maciço de Baturité, com mirantes, gastronomia serrana e passeios encantadores em Guaramiranga e Pacoti.',
     highlights: ['Clima de serra', 'Feriado prolongado', 'Ideal para famílias e casais'],
     gradient: 'linear-gradient(135deg, #134E4A 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'camocim-nov-2026',
@@ -196,6 +212,7 @@ export const TRIPS: Trip[] = [
     dates: '27 a 29 de Novembro',
     month: 'Novembro 2026',
     monthOrder: 1,
+    duration: '3 dias',
     sector: 'passeios-ceara',
     modality: 'Rodoviário',
     destinationState: 'CE',
@@ -203,6 +220,7 @@ export const TRIPS: Trip[] = [
       'Um fim de semana inesquecível pelo litoral oeste cearense, explorando as belezas naturais, dunas, lagoas e o charme praiano de Camocim.',
     highlights: ['Litoral Oeste do CE', 'Fim de semana completo', 'Saída de Fortaleza'],
     gradient: 'linear-gradient(135deg, #0E4A73 0%, #0284C7 100%)',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
   },
 
   // DEZEMBRO 2026
@@ -212,6 +230,7 @@ export const TRIPS: Trip[] = [
     dates: '05 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '1 dia',
     sector: 'passeios-ceara',
     modality: 'Bate-volta',
     destinationState: 'CE',
@@ -220,6 +239,7 @@ export const TRIPS: Trip[] = [
       'Dia inteiro de descanso e lazer nas falésias e águas tranquilas de Pontal do Maceió, um dos refúgios mais charmosos do litoral leste do Ceará.',
     highlights: ['Passeio de 1 dia', 'Praia charmosa e tranquila', 'Ótimo custo-benefício'],
     gradient: 'linear-gradient(135deg, #0369A1 0%, #38BDF8 100%)',
+    image: 'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'jericoacoara-dez-2026',
@@ -227,6 +247,7 @@ export const TRIPS: Trip[] = [
     dates: '11 a 13 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '3 dias',
     sector: 'passeios-ceara',
     modality: 'Rodoviário',
     destinationState: 'CE',
@@ -236,6 +257,7 @@ export const TRIPS: Trip[] = [
       'Um dos roteiros mais tradicionais da São Bento Turismo! Curta as lagoas cristalinas, dunas e o pôr do sol inesquecível de Jeri em grupo.',
     highlights: ['Clássico da São Bento', 'Fim de semana em Jeri', 'Acompanhamento em grupo'],
     gradient: 'linear-gradient(135deg, #0C4A6E 0%, #0EA5E9 100%)',
+    image: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'ponta-grossa-icapui-dez-2026',
@@ -243,6 +265,7 @@ export const TRIPS: Trip[] = [
     dates: '13 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '1 dia',
     sector: 'passeios-ceara',
     modality: 'Bate-volta',
     destinationState: 'CE',
@@ -251,6 +274,7 @@ export const TRIPS: Trip[] = [
       'Conheça as famosas falésias coloridas e a culinária litorânea de Ponta Grossa em Icapuí em um domingo leve e bem organizado.',
     highlights: ['Falésias coloridas', 'Passeio de domingo', 'Embarque em Fortaleza'],
     gradient: 'linear-gradient(135deg, #B45309 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'canoa-martins-thermas-dez-2026',
@@ -258,6 +282,7 @@ export const TRIPS: Trip[] = [
     dates: '17 a 20 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '4 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'CE / RN',
@@ -266,6 +291,7 @@ export const TRIPS: Trip[] = [
       'Roteiro completo unindo o melhor do litoral e da serra, com parada em Canoa Quebrada, Serra do Martins, Praia de Emanuela e day use nas piscinas termais do Hotel Thermas.',
     highlights: ['Praia + Serra + Termas', 'Day use no Hotel Thermas', '4 dias de roteiro'],
     gradient: 'linear-gradient(135deg, #0E4A73 0%, #1D4ED8 100%)',
+    image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'mundau-flecheiras-dez-2026',
@@ -273,6 +299,7 @@ export const TRIPS: Trip[] = [
     dates: '19 a 21 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '3 dias',
     sector: 'passeios-ceara',
     modality: 'Rodoviário',
     destinationState: 'CE',
@@ -280,6 +307,7 @@ export const TRIPS: Trip[] = [
       'Piscinas naturais, encontro do rio com o mar e muita tranquilidade em um fim de semana duplo por duas das praias mais amadas de Trairi.',
     highlights: ['Dois destinos em 1 viagem', 'Piscinas naturais', 'Perfeito para relaxar'],
     gradient: 'linear-gradient(135deg, #0F766E 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'reveillon-2027-thermas',
@@ -287,6 +315,7 @@ export const TRIPS: Trip[] = [
     dates: '30/12 a 02/01',
     month: 'Dezembro 2026',
     monthOrder: 2,
+    duration: '4 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'CE / RN',
@@ -296,6 +325,7 @@ export const TRIPS: Trip[] = [
       'Celebre a virada para 2027 com alegria e segurança! Roteiro especial passando por Canoa Quebrada, Serra do Martins, Praia de Tibau, Mossoró e day use nas piscinas térmicas do Hotel Thermas.',
     highlights: ['Virada de Ano em grupo', 'Piscinas térmicas Hotel Thermas', 'Vagas limitadas'],
     gradient: 'linear-gradient(135deg, #991B1B 0%, #D91E2A 50%, #0E4A73 100%)',
+    image: 'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?auto=format&fit=crop&w=900&q=80',
   },
 
   // JANEIRO 2027
@@ -305,6 +335,7 @@ export const TRIPS: Trip[] = [
     dates: '03 a 07 de Janeiro',
     month: 'Janeiro 2027',
     monthOrder: 3,
+    duration: '5 dias',
     sector: 'viagens-especiais',
     modality: 'Rodoviário',
     destinationState: 'DF',
@@ -313,6 +344,7 @@ export const TRIPS: Trip[] = [
       'Participe de um momento histórico na capital federal com a comodidade de viajar em grupo organizado pela São Bento Turismo.',
     highlights: ['Viagem de evento nacional', 'Roteiro pela capital federal', 'Grupo saindo de Fortaleza'],
     gradient: 'linear-gradient(135deg, #0F172A 0%, #1E40AF 100%)',
+    image: 'https://images.unsplash.com/photo-1584974292709-5c2f0619971b?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'sao-miguel-gostoso-shui-jan-2027',
@@ -320,6 +352,7 @@ export const TRIPS: Trip[] = [
     dates: '08 a 10 de Janeiro',
     month: 'Janeiro 2027',
     monthOrder: 3,
+    duration: '3 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'RN',
@@ -328,6 +361,7 @@ export const TRIPS: Trip[] = [
       'Comece 2027 renovando as energias em São Miguel do Gostoso e no encantador parque ecológico Shui Brasil, no Rio Grande do Norte.',
     highlights: ['Águas cristalinas no Shui Brasil', 'Charme de São Miguel do Gostoso', 'Férias de Janeiro'],
     gradient: 'linear-gradient(135deg, #0E7490 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'aracaju-jan-2027',
@@ -335,6 +369,7 @@ export const TRIPS: Trip[] = [
     dates: '13 a 17 de Janeiro',
     month: 'Janeiro 2027',
     monthOrder: 3,
+    duration: '5 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'SE',
@@ -342,6 +377,7 @@ export const TRIPS: Trip[] = [
       'Cinco dias para curtir a Orla de Atalaia, a hospitalidade sergipana, gastronomia típica e passeios imperdíveis em Aracaju.',
     highlights: ['5 dias de viagem', 'Capital acolhedora do Nordeste', 'Ideal para férias em família'],
     gradient: 'linear-gradient(135deg, #1E3A8A 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1520454974749-611b7248ffdb?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'maragogi-jan-2027',
@@ -349,6 +385,7 @@ export const TRIPS: Trip[] = [
     dates: '22 a 24 de Janeiro',
     month: 'Janeiro 2027',
     monthOrder: 3,
+    duration: '3 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'AL',
@@ -358,6 +395,7 @@ export const TRIPS: Trip[] = [
       'Encante-se com as águas azul-turquesa e as piscinas naturais do Caribe Brasileiro em uma excursão planejada para aproveitar cada momento.',
     highlights: ['Águas cristalinas em Alagoas', 'Piscinas naturais', 'Fim de semana de verão'],
     gradient: 'linear-gradient(135deg, #0284C7 0%, #0D9488 100%)',
+    image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'cimbres-terra-misericordia-jan-2027',
@@ -365,6 +403,7 @@ export const TRIPS: Trip[] = [
     dates: '29 a 31 de Janeiro',
     month: 'Janeiro 2027',
     monthOrder: 3,
+    duration: '3 dias',
     sector: 'turismo-religioso',
     modality: 'Rodoviário',
     destinationState: 'PE',
@@ -374,6 +413,7 @@ export const TRIPS: Trip[] = [
       'Peregrinação especial ao Santuário de Nossa Senhora das Graças em Cimbres (Pesqueira) e à Terra da Misericórdia, em Pernambuco.',
     highlights: ['Santuário de N. Sra. das Graças', 'Terra da Misericórdia', 'Grupo acolhedor de fé'],
     gradient: 'linear-gradient(135deg, #991B1B 0%, #D91E2A 100%)',
+    image: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=900&q=80',
   },
 
   // FEVEREIRO 2027
@@ -383,6 +423,7 @@ export const TRIPS: Trip[] = [
     dates: '05 a 10 de Fevereiro',
     month: 'Fevereiro 2027',
     monthOrder: 4,
+    duration: '6 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'PE / BA',
@@ -391,6 +432,7 @@ export const TRIPS: Trip[] = [
       'Um Carnaval diferente às margens do Velho Chico! Conheça o Vale do São Francisco, passeios de barco, vinícolas e a cultura de Petrolina e Juazeiro.',
     highlights: ['6 dias no Carnaval', 'Vale do São Francisco', 'Cultura, rio e gastronomia'],
     gradient: 'linear-gradient(135deg, #9A3412 0%, #D91E2A 100%)',
+    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80',
   },
 
   // ABRIL 2027
@@ -400,6 +442,7 @@ export const TRIPS: Trip[] = [
     dates: '17 a 21 de Abril',
     month: 'Abril 2027',
     monthOrder: 5,
+    duration: '5 dias',
     sector: 'viagens-especiais',
     modality: 'Aéreo',
     destinationState: 'PR / Internacional',
@@ -409,6 +452,7 @@ export const TRIPS: Trip[] = [
       'Viaje de avião para conhecer uma das 7 Maravilhas da Natureza! Roteiro pela Tríplice Fronteira incluindo Cataratas do Iguaçu, Argentina e Paraguai.',
     highlights: ['Viagem aérea em grupo', 'Brasil, Argentina e Paraguai', 'Cataratas do Iguaçu'],
     gradient: 'linear-gradient(135deg, #0F172A 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=900&q=80',
   },
 
   // MAIO 2027
@@ -418,6 +462,7 @@ export const TRIPS: Trip[] = [
     dates: '17 a 22 de Maio',
     month: 'Maio 2027',
     monthOrder: 6,
+    duration: '6 dias',
     sector: 'turismo-religioso',
     modality: 'Aéreo',
     destinationState: 'SP',
@@ -427,6 +472,7 @@ export const TRIPS: Trip[] = [
       'Seis dias emocionantes pelo Vale do Paraíba e Serra da Mantiqueira: Santuário Nacional de Aparecida, Frei Galvão, Canção Nova e o charme de Campos do Jordão.',
     highlights: ['Santuário de Aparecida', 'Canção Nova e Frei Galvão', 'Campos do Jordão incluso'],
     gradient: 'linear-gradient(135deg, #7F1219 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'chapada-das-mesas-mai-2027',
@@ -434,6 +480,7 @@ export const TRIPS: Trip[] = [
     dates: '26 a 30 de Maio',
     month: 'Maio 2027',
     monthOrder: 6,
+    duration: '5 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'MA',
@@ -442,6 +489,7 @@ export const TRIPS: Trip[] = [
       'Cachoeiras de águas cristalinas, poços azulados e paredões impressionantes na Chapada das Mesas, em Carolina do Maranhão.',
     highlights: ['Cachoeiras e poços azuis', '5 dias de natureza', 'Roteiro organizado'],
     gradient: 'linear-gradient(135deg, #065F46 0%, #1B7FC1 100%)',
+    image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=900&q=80',
   },
   {
     id: 'parnaiba-lencois-mai-2027',
@@ -449,6 +497,7 @@ export const TRIPS: Trip[] = [
     dates: '26 a 30 de Maio',
     month: 'Maio 2027',
     monthOrder: 6,
+    duration: '5 dias',
     sector: 'excursoes-nordeste',
     modality: 'Rodoviário',
     destinationState: 'PI / MA',
@@ -457,6 +506,7 @@ export const TRIPS: Trip[] = [
       'Em maio as lagoas dos Lençóis Maranhenses estão exuberantes! Combine o Delta do Parnaíba com um dos cenários mais deslumbrantes do mundo.',
     highlights: ['Melhor época das lagoas', 'Delta do Parnaíba + Lençóis', '5 dias inesquecíveis'],
     gradient: 'linear-gradient(135deg, #0E4A73 0%, #0EA5E9 100%)',
+    image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=900&q=80',
   },
 ];
 
@@ -465,6 +515,37 @@ export const MONTHS = Array.from(new Set(TRIPS.map((t) => t.month)));
 export function getTripsBySector(sector: SectorSlug): Trip[] {
   return TRIPS.filter((t) => t.sector === sector);
 }
+
+export function getTripById(id: string): Trip | undefined {
+  return TRIPS.find((t) => t.id === id);
+}
+
+export const HOW_IT_WORKS_STEPS = [
+  {
+    step: '01',
+    title: 'Escolha seu destino',
+    description:
+      'Navegue pelos setores ou pelo calendário 2026/2027 e encontre a viagem que combina com a sua família ou grupo.',
+  },
+  {
+    step: '02',
+    title: 'Receba a ficha no WhatsApp',
+    description:
+      'Clique no botão do roteiro para receber valores atualizados, o que está incluso, formas de pagamento e orientações.',
+  },
+  {
+    step: '03',
+    title: 'Confirme sua vaga',
+    description:
+      'Atendimento humano direto com a equipe da São Bento Turismo para tirar todas as dúvidas e formalizar sua reserva.',
+  },
+  {
+    step: '04',
+    title: 'Embarque em Fortaleza',
+    description:
+      'Você recebe os horários e o ponto de embarque com antecedência e viaja tranquilo com o nosso grupo.',
+  },
+];
 
 export const FAQ_ITEMS = [
   {
