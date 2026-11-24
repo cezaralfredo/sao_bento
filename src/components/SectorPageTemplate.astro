@@ -1,0 +1,193 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TripCard from './TripCard.astro';
+import {
+  SECTOR_LIST,
+  getTripsBySector,
+  getWhatsAppUrl,
+  type SectorInfo,
+} from '../data/viagens';
+
+interface Props {
+  sector: SectorInfo;
+  extraNoteTitle?: string;
+  extraNoteText?: string;
+}
+
+const { sector, extraNoteTitle, extraNoteText } = Astro.props;
+const trips = getTripsBySector(sector.slug);
+const otherSectors = SECTOR_LIST.filter((s) => s.slug !== sector.slug);
+const sectorWaUrl = getWhatsAppUrl(
+  `Olá, São Bento Turismo! Quero saber mais sobre os roteiros de "${sector.title}". Pode me enviar informações e valores?`
+);
+---
+
+<BaseLayout
+  title={sector.seoTitle}
+  description={sector.seoDescription}
+  currentPath={`/${sector.slug}`}
+>
+  <section class="sector-hero" style={`background: ${sector.heroGradient};`}>
+    <div class="container">
+      <span class="hero-eyebrow-light">{sector.eyebrow}</span>
+      <h1>{sector.title}</h1>
+      <p>{sector.description}</p>
+      <div class="hero-actions">
+        <a href="#roteiros" class="btn btn-primary">
+          Ver {trips.length} {trips.length === 1 ? 'roteiro programado' : 'roteiros programados'}
+        </a>
+        <a href={sectorWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
+          Tirar dúvidas no WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="eyebrow eyebrow-blue">Como funciona este setor</span>
+        <h2 class="section-title">Viajar com a São Bento é mais tranquilo</h2>
+        <p class="section-subtitle">{sector.tagline}</p>
+      </div>
+
+      <div class="check-grid">
+        {sector.highlights.map((item) => (
+          <div class="check-item">
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+
+      {extraNoteTitle && extraNoteText && (
+        <div class="extra-note">
+          <h3>{extraNoteTitle}</h3>
+          <p>{extraNoteText}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-alt" id="roteiros">
+    <div class="container">
+      <div class="section-header">
+        <span class="eyebrow">Agenda 2026 / 2027</span>
+        <h2 class="section-title">Próximas saídas em {sector.title}</h2>
+        <p class="section-subtitle">
+          Clique no botão verde do roteiro de seu interesse para conversar diretamente no WhatsApp com a nossa equipe e receber valores, inclusões e vagas.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        {trips.map((trip) => (
+          <TripCard trip={trip} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-box">
+        <div>
+          <h2>{sector.ctaTitle}</h2>
+          <p>{sector.ctaText}</p>
+        </div>
+        <div class="cta-box-actions">
+          <a href={sectorWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            Falar no WhatsApp agora
+          </a>
+          <a href="/calendario" class="btn btn-outline-light">
+            Ver calendário completo
+          </a>
+        </div>
+      </div>
+
+      <div class="other-sectors">
+        <h3>Explore também outros setores da São Bento Turismo</h3>
+        <div class="grid-3">
+          {otherSectors.map((other) => (
+            <a href={`/${other.slug}`} class="other-sector-card">
+              <span class="other-eyebrow">{other.eyebrow}</span>
+              <h4>{other.title}</h4>
+              <p>{other.tagline}</p>
+              <span class="other-link">Ver roteiros →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .extra-note {
+    margin-top: 2rem;
+    background: var(--sb-red-soft);
+    border: 1px solid rgba(217, 30, 42, 0.22);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1.75rem;
+  }
+
+  .extra-note h3 {
+    color: var(--sb-red-dark);
+    font-size: 1.12rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .extra-note p {
+    margin: 0;
+    color: var(--sb-text);
+  }
+
+  .other-sectors {
+    margin-top: 4rem;
+  }
+
+  .other-sectors > h3 {
+    font-size: 1.35rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .other-sector-card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.16s ease, border-color 0.16s ease;
+  }
+
+  .other-sector-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--sb-blue);
+  }
+
+  .other-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sb-blue);
+    margin-bottom: 0.4rem;
+  }
+
+  .other-sector-card h4 {
+    font-size: 1.12rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .other-sector-card p {
+    font-size: 0.92rem;
+    flex: 1;
+  }
+
+  .other-link {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--sb-red);
+  }
+</style>

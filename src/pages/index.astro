@@ -1,0 +1,509 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TripCard from '../components/TripCard.astro';
+import {
+  COMPANY,
+  SECTOR_LIST,
+  TRIPS,
+  getTripsBySector,
+  getWhatsAppUrl,
+} from '../data/viagens';
+
+const featuredTrips = TRIPS.filter((t) => t.featured);
+const heroWaUrl = getWhatsAppUrl(
+  'Olá, São Bento Turismo! Quero conhecer os roteiros disponíveis e valores para as próximas viagens.'
+);
+const groupWaUrl = getWhatsAppUrl(
+  'Olá, São Bento Turismo! Gostaria de solicitar um orçamento para grupo fechado / família / melhor idade.'
+);
+---
+
+<BaseLayout
+  title="São Bento Turismo | Excursões, Passeios e Peregrinações saindo de Fortaleza - CE"
+  description="Há 20 anos realizando viagens em grupo saindo de Fortaleza: passeios no Ceará, excursões pelo Nordeste, turismo religioso e pacotes aéreos especiais."
+  currentPath="/"
+>
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="hero-badge">Desde 2006 em Fortaleza • 20 anos de estrada</span>
+        <h1>
+          Viajar em grupo com <span class="highlight">organização, alegria</span> e acompanhamento de perto.
+        </h1>
+        <p>
+          Passeios pelo Ceará, excursões pelo Nordeste, turismo religioso e viagens especiais saindo de Fortaleza.
+          Escolha seu próximo destino e fale direto com a nossa equipe no WhatsApp.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/calendario" class="btn btn-primary">
+            Ver Calendário 2026 / 2027 ({TRIPS.length} saídas)
+          </a>
+          <a href={heroWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            Falar no WhatsApp agora
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div>
+            <strong>20 anos</strong>
+            <span>de tradição (2006–2026)</span>
+          </div>
+          <div>
+            <strong>{TRIPS.length} saídas</strong>
+            <span>programadas até Maio/2027</span>
+          </div>
+          <div>
+            <strong>4 setores</strong>
+            <span>CE, Nordeste, Fé e Aéreo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel-card">
+          <span class="panel-label">Próxima grande agenda</span>
+          <h2>Vamos viajar, meu povo!</h2>
+          <p>
+            Confira nossos principais embarques confirmados saindo de Fortaleza:
+          </p>
+          <ul class="hero-mini-list">
+            <li>
+              <span class="dot"></span>
+              <div>
+                <strong>Novembro e Dezembro</strong>
+                <span>Guaramiranga, Camocim, Fortim, Jeri, Mundaú e Réveillon no Hotel Thermas</span>
+              </div>
+            </li>
+            <li>
+              <span class="dot dot-red"></span>
+              <div>
+                <strong>Janeiro e Fevereiro 2027</strong>
+                <span>São Miguel do Gostoso, Aracaju, Maragogi, Cimbres e Carnaval em Petrolina</span>
+              </div>
+            </li>
+            <li>
+              <span class="dot"></span>
+              <div>
+                <strong>Abril e Maio 2027</strong>
+                <span>Foz do Iguaçu (Aéreo), Aparecida & Canção Nova, Chapada das Mesas e Lençóis</span>
+              </div>
+            </li>
+          </ul>
+          <a href="/calendario" class="btn btn-blue panel-btn">
+            Explorar todas as datas →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 SETORES DE TURISMO -->
+  <section class="section" id="setores">
+    <div class="container">
+      <div class="section-header center">
+        <span class="eyebrow">Nossos Setores de Turismo</span>
+        <h2 class="section-title">Um roteiro ideal para cada momento da sua viagem</h2>
+        <p class="section-subtitle">
+          Cada setor tem uma página dedicada com os destinos programados, diferenciais e contato direto para reserva.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        {SECTOR_LIST.map((sector) => {
+          const count = getTripsBySector(sector.slug).length;
+          return (
+            <a href={`/${sector.slug}`} class="sector-card">
+              <div class="sector-card-top" style={`background: ${sector.heroGradient};`}>
+                <span class="sector-count">{count} {count === 1 ? 'saída' : 'saídas'}</span>
+                <h3>{sector.title}</h3>
+              </div>
+              <div class="sector-card-body">
+                <span class="sector-eyebrow">{sector.eyebrow}</span>
+                <p>{sector.tagline}</p>
+                <span class="sector-cta">Ver roteiros do setor →</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTAQUES DA AGENDA -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header-row">
+        <div>
+          <span class="eyebrow eyebrow-blue">Destaques 2026 / 2027</span>
+          <h2 class="section-title">Viagens mais procuradas</h2>
+          <p class="section-subtitle">
+            Garanta sua vaga com antecedência. Clique em qualquer roteiro para receber valores e o que está incluso no WhatsApp.
+          </p>
+        </div>
+        <a href="/calendario" class="btn btn-outline">Ver todas as {TRIPS.length} saídas →</a>
+      </div>
+
+      <div class="grid-3">
+        {featuredTrips.map((trip) => (
+          <TripCard trip={trip} showSectorBadge={true} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUE VIAJAR COM A SÃO BENTO -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header center">
+        <span class="eyebrow">Confiança e Tradição</span>
+        <h2 class="section-title">Por que viajar com a São Bento Turismo?</h2>
+        <p class="section-subtitle">
+          Uma agência familiar de Fortaleza que há duas décadas transforma viagens em grupo em memórias inesquecíveis.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="pillar-card">
+          <div class="pillar-num">01</div>
+          <h3>20 anos de história real</h3>
+          <p>
+            Fundada em agosto de 2006 por {COMPANY.founders}, a {COMPANY.brandName} tem CNPJ ativo ({COMPANY.cnpj}) e tradição consolidada na formação de grupos em Fortaleza.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-num pillar-red">02</div>
+          <h3>Acolhimento para famílias e Melhor Idade</h3>
+          <p>
+            Nossa marca sempre se destacou pelo cuidado com famílias, grupos religiosos e viajantes da terceira idade — com ritmo agradável, segurança e atenção a cada detalhe.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-num">03</div>
+          <h3>Atendimento humano e direto</h3>
+          <p>
+            Sem robôs complicados: você tira dúvidas, confere datas, embarque e condições diretamente com a nossa equipe pelo WhatsApp antes, durante e depois da viagem.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNER GRUPOS FECHADOS -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-box">
+        <div>
+          <span class="hero-eyebrow-light">Grupos Fechados • Paróquias • Melhor Idade • Empresas</span>
+          <h2>Quer montar uma excursão exclusiva para o seu grupo?</h2>
+          <p>
+            Organizamos roteiros personalizados para romarias, associações, famílias, escolas e eventos saindo de Fortaleza.
+          </p>
+        </div>
+        <div class="cta-box-actions">
+          <a href={groupWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            Solicitar orçamento no WhatsApp
+          </a>
+          <a href="/sobre" class="btn btn-outline-light">
+            Conhecer nossa história
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    background: linear-gradient(135deg, #0b2942 0%, #0e4a73 52%, #1b7fc1 100%);
+    color: #ffffff;
+    padding: 4.5rem 0 4.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(217, 30, 42, 0.25) 0%, transparent 70%);
+    top: -160px;
+    right: -120px;
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr;
+    gap: 2.75rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-copy h1 {
+    color: #ffffff;
+    font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.12;
+    margin-bottom: 1.1rem;
+  }
+
+  .hero-copy .highlight {
+    color: #ffd1d4;
+  }
+
+  .hero-copy p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    max-width: 600px;
+  }
+
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .hero-trust strong {
+    display: block;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .hero-trust span {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .hero-panel-card {
+    background: #ffffff;
+    color: var(--sb-text);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .panel-label {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sb-red);
+    background: var(--sb-red-soft);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-panel-card h2 {
+    font-size: 1.55rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .hero-panel-card > p {
+    font-size: 0.94rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+  }
+
+  .hero-mini-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sb-blue);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .dot-red {
+    background: var(--sb-red);
+  }
+
+  .hero-mini-list strong {
+    display: block;
+    font-size: 0.94rem;
+    color: var(--sb-blue-deep);
+  }
+
+  .hero-mini-list span {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--sb-muted);
+    line-height: 1.45;
+  }
+
+  .panel-btn {
+    width: 100%;
+  }
+
+  /* Setores */
+  .sector-card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  .sector-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--sb-blue);
+  }
+
+  .sector-card-top {
+    padding: 1.45rem 1.35rem;
+    color: #ffffff;
+    min-height: 128px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .sector-count {
+    align-self: flex-start;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+  }
+
+  .sector-card-top h3 {
+    color: #ffffff;
+    font-size: 1.24rem;
+    font-weight: 800;
+    margin: 0.8rem 0 0;
+  }
+
+  .sector-card-body {
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .sector-eyebrow {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--sb-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.45rem;
+  }
+
+  .sector-card-body p {
+    font-size: 0.92rem;
+    flex: 1;
+  }
+
+  .sector-cta {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--sb-red);
+    margin-top: 0.5rem;
+  }
+
+  .section-header-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.25rem;
+  }
+
+  .section-header-row .section-subtitle {
+    margin-bottom: 0;
+    max-width: 620px;
+  }
+
+  /* Pilares */
+  .pillar-card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: var(--radius-md);
+    padding: 1.85rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .pillar-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--sb-blue-soft);
+    color: var(--sb-blue-dark);
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+
+  .pillar-red {
+    background: var(--sb-red-soft);
+    color: var(--sb-red);
+  }
+
+  .pillar-card h3 {
+    font-size: 1.18rem;
+  }
+
+  .pillar-card p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

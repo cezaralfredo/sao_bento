@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TripCard from '../components/TripCard.astro';
+import { MONTHS, SECTOR_LIST, TRIPS, getWhatsAppUrl } from '../data/viagens';
+
+const waListUrl = getWhatsAppUrl(
+  'Olá, São Bento Turismo! Quero entrar na lista de novidades do WhatsApp para receber o calendário das próximas viagens.'
+);
+---
+
+<BaseLayout
+  title="Calendário de Viagens 2026 / 2027 | São Bento Turismo"
+  description="Confira todas as excursões, passeios no Ceará, viagens pelo Nordeste, peregrinações e pacotes aéreos da São Bento Turismo saindo de Fortaleza."
+  currentPath="/calendario"
+>
+  <section class="sector-hero" style="background: linear-gradient(135deg, #0B2942 0%, #1B7FC1 65%, #D91E2A 100%);">
+    <div class="container">
+      <span class="hero-eyebrow-light">Agenda Oficial • Novembro 2026 a Maio 2027</span>
+      <h1>Calendário Completo de Viagens</h1>
+      <p>
+        Todas as {TRIPS.length} saídas confirmadas saindo de Fortaleza. Filtre por setor ou mês e clique em qualquer roteiro para receber valores e garantir sua vaga pelo WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="filters-bar" aria-label="Filtros do calendário">
+        <div class="filter-group">
+          <span class="filter-label">Filtrar por setor:</span>
+          <div class="filter-pills" id="sector-filters">
+            <button type="button" class="filter-btn active" data-filter-sector="all">
+              Todos ({TRIPS.length})
+            </button>
+            {SECTOR_LIST.map((sector) => (
+              <button type="button" class="filter-btn" data-filter-sector={sector.slug}>
+                {sector.shortTitle}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="month-select" class="filter-label">Filtrar por mês:</label>
+          <select id="month-select" class="month-select">
+            <option value="all">Todos os meses</option>
+            {MONTHS.map((m) => (
+              <option value={m}>{m}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <p class="results-counter" id="results-counter">
+        Exibindo <strong>{TRIPS.length}</strong> viagens programadas
+      </p>
+
+      <div class="grid-3" id="trips-grid">
+        {TRIPS.map((trip) => (
+          <TripCard trip={trip} showSectorBadge={true} />
+        ))}
+      </div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>Nenhuma viagem encontrada nessa combinação de filtros</h3>
+        <p>Tente selecionar "Todos os meses" ou outro setor de turismo.</p>
+        <button type="button" class="btn btn-blue" id="reset-filters">
+          Mostrar todas as viagens
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-box">
+        <div>
+          <h2>Não encontrou a data que procurava?</h2>
+          <p>
+            Fale com a nossa equipe no WhatsApp para entrar na lista de interesse e receber primeiro os novos roteiros de 2027.
+          </p>
+        </div>
+        <div class="cta-box-actions">
+          <a href={waListUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            Receber novidades no WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const sectorButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter-sector]'));
+    const monthSelect = document.getElementById('month-select') as HTMLSelectElement | null;
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('#trips-grid .trip-card'));
+    const counter = document.getElementById('results-counter');
+    const emptyState = document.getElementById('empty-state');
+    const resetBtn = document.getElementById('reset-filters');
+
+    let currentSector = 'all';
+    let currentMonth = 'all';
+
+    function applyFilters() {
+      let visible = 0;
+      cards.forEach((card) => {
+        const matchSector = currentSector === 'all' || card.dataset.sector === currentSector;
+        const matchMonth = currentMonth === 'all' || card.dataset.month === currentMonth;
+        const show = matchSector && matchMonth;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+
+      if (counter) {
+        counter.innerHTML = `Exibindo <strong>${visible}</strong> ${visible === 1 ? 'viagem programada' : 'viagens programadas'}`;
+      }
+      if (emptyState) {
+        emptyState.hidden = visible > 0;
+      }
+    }
+
+    sectorButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sectorButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSector = btn.dataset.filterSector || 'all';
+        applyFilters();
+      });
+    });
+
+    if (monthSelect) {
+      monthSelect.addEventListener('change', () => {
+        currentMonth = monthSelect.value;
+        applyFilters();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currentSector = 'all';
+        currentMonth = 'all';
+        sectorButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterSector === 'all'));
+        if (monthSelect) monthSelect.value = 'all';
+        applyFilters();
+      });
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .filters-bar {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--sb-blue-deep);
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .filter-btn {
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 700;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--sb-border);
+    background: #ffffff;
+    color: var(--sb-blue-deep);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--sb-blue);
+    background: var(--sb-blue-soft);
+  }
+
+  .filter-btn.active {
+    background: var(--sb-blue);
+    border-color: var(--sb-blue);
+    color: #ffffff;
+  }
+
+  .month-select {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--sb-border);
+    background: #ffffff;
+    color: var(--sb-blue-deep);
+    cursor: pointer;
+  }
+
+  .results-counter {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    background: var(--sb-surface);
+    border: 1px dashed var(--sb-border);
+    border-radius: var(--radius-md);
+    padding: 3rem 1.5rem;
+    margin-top: 1rem;
+  }
+</style>

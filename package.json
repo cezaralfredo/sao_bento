@@ -1,0 +1,16 @@
+{
+  "name": "sao-bento-turismo",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Site institucional multi-página da São Bento Turismo (Fortaleza - CE)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.7.0"
+  }
+}
