@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://saobentoturismo.com.br',
+  site: 'https://saobento.anauedesign.com.br',
   compressHTML: true,
 });
