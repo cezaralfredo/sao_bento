@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FaqAccordion from '../components/FaqAccordion.astro';
 import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import StampBadge from '../components/StampBadge.astro';
 import { COMPANY, FAQ_ITEMS, getWhatsAppUrl } from '../data/viagens';
 
 const mapsDirectionsUrl =
@@ -14,7 +15,7 @@ const mapsDirectionsUrl =
   currentPath="/sobre"
   ogImage="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
 >
-  <section class="sector-hero" style="background: linear-gradient(135deg, #0B2942 0%, #0E4A73 60%, #1268A3 100%);">
+  <section class="sector-hero" style="background: linear-gradient(135deg, #092338 0%, #0E4A73 60%, #1268A3 100%);">
     <img
       src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80"
       alt=""
@@ -23,8 +24,10 @@ const mapsDirectionsUrl =
       onerror="this.style.display='none'"
     />
     <div class="container">
-      <span class="hero-eyebrow-light">Nossa História • Fortaleza, Ceará</span>
-      <h1>20 anos formando grupos e realizando viagens inesquecíveis</h1>
+      <span class="hero-eyebrow-light">✦ Nossa História • Fortaleza, Ceará</span>
+      <h1>
+        20 anos formando grupos e realizando <span class="h1-accent">viagens inesquecíveis</span>
+      </h1>
       <p>
         Fundada em 29 de agosto de 2006 por {COMPANY.founders}, a {COMPANY.legalName} une tradição familiar, organização e atendimento próximo em cada roteiro.
       </p>
@@ -35,7 +38,9 @@ const mapsDirectionsUrl =
     <div class="container story-grid">
       <div>
         <span class="eyebrow">Quem Somos</span>
-        <h2 class="section-title">"{COMPANY.historicalSlogan}"</h2>
+        <blockquote class="story-quote">
+          “{COMPANY.historicalSlogan}”
+        </blockquote>
         <p>
           Desde o início das nossas atividades em Fortaleza, a <strong>{COMPANY.brandName}</strong> nasceu com um propósito claro: oferecer viagens bem organizadas, seguras e acessíveis, com foco especial na <strong>formação de grupos</strong>.
         </p>
@@ -48,6 +53,9 @@ const mapsDirectionsUrl =
       </div>
 
       <div class="facts-card">
+        <div class="facts-stamp">
+          <StampBadge size={94} variant="navy" />
+        </div>
         <h3>Dados Oficiais da Agência</h3>
         <dl class="facts-list">
           <div>
@@ -76,7 +84,9 @@ const mapsDirectionsUrl =
     <div class="container">
       <div class="section-header">
         <span class="eyebrow eyebrow-blue">Atendimento & Localização</span>
-        <h2 class="section-title">Fale direto com a nossa equipe</h2>
+        <h2 class="section-title">
+          Fale direto com a <span class="h2-serif">nossa equipe</span>
+        </h2>
         <p class="section-subtitle">
           Escolha um dos nossos canais oficiais de WhatsApp para consultar roteiros, valores e vagas disponíveis.
         </p>
@@ -128,7 +138,9 @@ const mapsDirectionsUrl =
     <div class="container">
       <div class="section-header center">
         <span class="eyebrow">Perguntas Frequentes</span>
-        <h2 class="section-title">Dúvidas comuns antes de reservar</h2>
+        <h2 class="section-title">
+          Dúvidas comuns <span class="h2-serif">antes de reservar</span>
+        </h2>
       </div>
 
       <FaqAccordion items={FAQ_ITEMS} />
@@ -140,22 +152,42 @@ const mapsDirectionsUrl =
   .story-grid {
     display: grid;
     grid-template-columns: 1.25fr 0.95fr;
-    gap: 2.5rem;
+    gap: 2.75rem;
     align-items: start;
   }
 
+  .story-quote {
+    margin: 0 0 1.4rem;
+    padding: 0.35rem 0 0.35rem 1.25rem;
+    border-left: 4px solid var(--sb-red);
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(1.85rem, 3.2vw, 2.55rem);
+    line-height: 1.15;
+    color: var(--sb-blue-deep);
+  }
+
   .facts-card {
+    position: relative;
     background: var(--sb-surface);
     border: 1px solid var(--sb-border);
-    border-radius: var(--radius-md);
-    padding: 1.85rem;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
     box-shadow: var(--shadow-sm);
   }
 
+  .facts-stamp {
+    position: absolute;
+    top: -1.4rem;
+    right: 1.25rem;
+  }
+
   .facts-card h3 {
-    font-size: 1.22rem;
+    font-size: 1.26rem;
     margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
+    padding-right: 5.5rem;
+    padding-bottom: 0.85rem;
     border-bottom: 1px solid var(--sb-border);
   }
 
@@ -163,14 +195,14 @@ const mapsDirectionsUrl =
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.05rem;
   }
 
   .facts-list dt {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
     color: var(--sb-blue-action);
     margin-bottom: 0.2rem;
   }
@@ -199,7 +231,7 @@ const mapsDirectionsUrl =
     background: var(--sb-surface);
     border: 1px solid var(--sb-border);
     border-radius: var(--radius-md);
-    padding: 1.5rem;
+    padding: 1.55rem;
     box-shadow: var(--shadow-sm);
   }
 
@@ -207,12 +239,13 @@ const mapsDirectionsUrl =
     font-size: 0.82rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--sb-red-dark);
   }
 
   .contact-item h3 {
-    font-size: 1.45rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
     margin: 0.3rem 0 0.5rem;
   }
 
@@ -249,6 +282,7 @@ const mapsDirectionsUrl =
   }
 
   .map-link {
+    font-family: var(--font-heading);
     font-weight: 700;
     color: var(--sb-blue-action);
     white-space: nowrap;
@@ -263,6 +297,15 @@ const mapsDirectionsUrl =
     .story-grid,
     .contact-grid {
       grid-template-columns: 1fr;
+    }
+
+    .facts-stamp {
+      position: static;
+      margin-bottom: 1rem;
+    }
+
+    .facts-card h3 {
+      padding-right: 0;
     }
   }
 </style>

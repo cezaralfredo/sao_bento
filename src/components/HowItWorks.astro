@@ -12,7 +12,9 @@ const { altBackground = false } = Astro.props;
   <div class="container">
     <div class="section-header center">
       <span class="eyebrow eyebrow-blue">Passo a passo simples</span>
-      <h2 class="section-title">Como funciona viajar com a São Bento Turismo</h2>
+      <h2 class="section-title">
+        Como funciona viajar <span class="h2-serif">sem preocupação</span>
+      </h2>
       <p class="section-subtitle">
         Um processo transparente, sem burocracia e com atendimento humano do primeiro contato até o seu retorno a Fortaleza.
       </p>
@@ -21,7 +23,11 @@ const { altBackground = false } = Astro.props;
     <div class="steps-grid">
       {HOW_IT_WORKS_STEPS.map((item) => (
         <div class="step-card">
-          <div class="step-badge">{item.step}</div>
+          <div class="step-top">
+            <span class="step-number">{item.step}</span>
+            <span class="step-rule" aria-hidden="true"></span>
+            <span class="step-dot" aria-hidden="true"></span>
+          </div>
           <h3>{item.title}</h3>
           <p>{item.description}</p>
         </div>
@@ -34,36 +40,58 @@ const { altBackground = false } = Astro.props;
   .steps-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.35rem;
+    gap: 1.4rem;
   }
 
   .step-card {
     background: var(--sb-surface);
     border: 1px solid var(--sb-border);
     border-radius: var(--radius-md);
-    padding: 1.65rem 1.45rem;
+    padding: 1.75rem 1.55rem;
     box-shadow: var(--shadow-sm);
     position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
-  .step-badge {
-    display: inline-flex;
+  .step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--sb-border-strong);
+  }
+
+  .step-top {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--sb-blue-action) 0%, var(--sb-blue-deep) 100%);
-    color: #ffffff;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 1.02rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .step-number {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 0.9;
+    color: var(--sb-blue-action);
+    letter-spacing: -0.04em;
+  }
+
+  .step-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--sb-border-strong);
+  }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sb-red);
+    flex-shrink: 0;
   }
 
   .step-card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.45rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
   }
 
   .step-card p {

@@ -1,0 +1,101 @@
+---
+interface Props {
+  size?: number;
+  variant?: 'gold' | 'navy';
+}
+
+const { size = 116, variant = 'gold' } = Astro.props;
+const uid = `stamp-path-${variant}-${size}`;
+---
+
+<div
+  class:list={['stamp-badge', `stamp-${variant}`]}
+  style={`width: ${size}px; height: ${size}px;`}
+  aria-label="Selo São Bento Turismo — Desde 2006 em Fortaleza"
+>
+  <svg viewBox="0 0 120 120" width={size} height={size} class="stamp-ring" aria-hidden="true">
+    <defs>
+      <path id={uid} d="M 60, 60 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
+    </defs>
+    <text class="stamp-text">
+      <textPath href={`#${uid}`} startOffset="0%">
+        • SÃO BENTO TURISMO • DESDE 2006 • FORTALEZA CE
+      </textPath>
+    </text>
+  </svg>
+  <div class="stamp-center" aria-hidden="true">
+    <strong>20</strong>
+    <span>ANOS</span>
+  </div>
+</div>
+
+<style>
+  .stamp-badge {
+    position: relative;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 12px 30px rgba(9, 35, 56, 0.24);
+    user-select: none;
+  }
+
+  .stamp-gold {
+    background: linear-gradient(145deg, #fff8e6 0%, #fde68a 100%);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    color: var(--sb-blue-deep);
+  }
+
+  .stamp-navy {
+    background: var(--sb-blue-deep);
+    border: 2px dashed rgba(253, 230, 138, 0.55);
+    color: var(--sb-warm-light);
+  }
+
+  .stamp-ring {
+    position: absolute;
+    inset: 0;
+    animation: stamp-spin 24s linear infinite;
+  }
+
+  .stamp-text {
+    font-family: var(--font-heading);
+    font-size: 8.6px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    fill: currentColor;
+  }
+
+  .stamp-center {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stamp-center strong {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 0.95;
+  }
+
+  .stamp-center span {
+    font-family: var(--font-heading);
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    margin-top: 2px;
+  }
+
+  @keyframes stamp-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
