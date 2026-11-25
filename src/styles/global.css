@@ -1,16 +1,22 @@
 :root {
-  /* Paleta oficial derivada do logotipo São Bento Turismo */
+  /* Paleta oficial derivada do logotipo São Bento Turismo (ajustada para WCAG AA) */
   --sb-blue: #1b7fc1;
+  --sb-blue-action: #1268a3;
   --sb-blue-dark: #0e4a73;
   --sb-blue-deep: #0b2942;
   --sb-blue-soft: #ebf5fc;
 
   --sb-red: #d91e2a;
-  --sb-red-dark: #b01520;
+  --sb-red-dark: #a8141e;
   --sb-red-soft: #fdf0f1;
 
-  --sb-wa: #1f8f47;
-  --sb-wa-dark: #167237;
+  --sb-wa: #167c3c;
+  --sb-wa-dark: #11602e;
+
+  /* Acento quente sutil (sol / acolhimento nordestino) */
+  --sb-warm: #d97706;
+  --sb-warm-light: #fde68a;
+  --sb-warm-soft: #fffbeb;
 
   --sb-bg: #f8fafc;
   --sb-surface: #ffffff;
@@ -54,12 +60,38 @@ main {
   flex: 1;
 }
 
+/* Acessibilidade: foco visível e skip link */
+:focus-visible {
+  outline: 3px solid var(--sb-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -120px;
+  left: 1rem;
+  z-index: 100;
+  background: var(--sb-blue-deep);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0.85rem;
+}
+
 h1,
 h2,
 h3,
 h4 {
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-  line-height: 1.2;
+  line-height: 1.22;
   letter-spacing: -0.02em;
   margin: 0 0 0.75rem;
   color: var(--sb-blue-deep);
@@ -112,13 +144,13 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--sb-red);
+  letter-spacing: 0.07em;
+  color: var(--sb-red-dark);
   background: var(--sb-red-soft);
-  padding: 0.35rem 0.85rem;
+  padding: 0.36rem 0.9rem;
   border-radius: 999px;
   margin-bottom: 0.9rem;
 }
@@ -151,8 +183,9 @@ img {
   border-radius: 999px;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
   text-align: center;
+  line-height: 1.25;
 }
 
 .btn:hover {
@@ -167,13 +200,13 @@ img {
 
 .btn-primary:hover {
   background: var(--sb-red-dark);
-  box-shadow: 0 12px 24px rgba(217, 30, 42, 0.32);
+  box-shadow: 0 12px 24px rgba(168, 20, 30, 0.32);
 }
 
 .btn-blue {
-  background: var(--sb-blue);
+  background: var(--sb-blue-action);
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(27, 127, 193, 0.25);
+  box-shadow: 0 8px 20px rgba(18, 104, 163, 0.24);
 }
 
 .btn-blue:hover {
@@ -183,7 +216,7 @@ img {
 .btn-whatsapp {
   background: var(--sb-wa);
   color: #ffffff;
-  box-shadow: 0 8px 18px rgba(31, 143, 71, 0.24);
+  box-shadow: 0 8px 18px rgba(22, 124, 60, 0.24);
 }
 
 .btn-whatsapp:hover {
@@ -193,23 +226,24 @@ img {
 .btn-outline {
   background: transparent;
   color: var(--sb-blue-deep);
-  border-color: var(--sb-border);
+  border-color: #cbd5e1;
 }
 
 .btn-outline:hover {
-  border-color: var(--sb-blue);
+  border-color: var(--sb-blue-action);
   color: var(--sb-blue-dark);
   background: var(--sb-blue-soft);
 }
 
 .btn-outline-light {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.45);
+  border-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(4px);
 }
 
 .btn-outline-light:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.22);
   border-color: #ffffff;
 }
 
@@ -237,13 +271,13 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.28rem 0.7rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 999px;
 }
 
-/* Page Hero (Subpáginas de setor) */
+/* Page Hero (Subpáginas de setor, calendário e sobre) */
 .sector-hero {
   color: #ffffff;
   padding: 4.5rem 0 4rem;
@@ -255,7 +289,12 @@ img {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.14), transparent 55%);
+  background: linear-gradient(
+    120deg,
+    rgba(11, 41, 66, 0.82) 0%,
+    rgba(11, 41, 66, 0.52) 55%,
+    rgba(11, 41, 66, 0.72) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -266,8 +305,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.28;
-  mix-blend-mode: luminosity;
+  opacity: 0.42;
   pointer-events: none;
   z-index: 0;
 }
@@ -282,11 +320,12 @@ img {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   max-width: 780px;
+  text-shadow: 0 2px 10px rgba(11, 41, 66, 0.25);
 }
 
 .sector-hero p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 1.1rem;
   max-width: 680px;
 }
 
@@ -294,14 +333,15 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  padding: 0.38rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(4px);
+  padding: 0.38rem 0.95rem;
   border-radius: 999px;
   margin-bottom: 1rem;
 }
@@ -330,6 +370,8 @@ img {
   border-radius: var(--radius-md);
   padding: 1.15rem 1.25rem;
   box-shadow: var(--shadow-sm);
+  color: var(--sb-text);
+  font-size: 0.98rem;
 }
 
 .check-icon {
@@ -338,7 +380,7 @@ img {
   height: 28px;
   border-radius: 50%;
   background: var(--sb-blue-soft);
-  color: var(--sb-blue);
+  color: var(--sb-blue-action);
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -348,7 +390,7 @@ img {
 
 /* CTA Banner */
 .cta-box {
-  background: linear-gradient(135deg, var(--sb-blue-deep) 0%, var(--sb-blue-dark) 60%, var(--sb-blue) 100%);
+  background: linear-gradient(135deg, var(--sb-blue-deep) 0%, var(--sb-blue-dark) 58%, var(--sb-blue-action) 100%);
   color: #ffffff;
   border-radius: var(--radius-lg);
   padding: 3rem 2.5rem;
@@ -367,7 +409,7 @@ img {
 }
 
 .cta-box p {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.92);
   margin: 0;
   max-width: 580px;
 }
@@ -400,5 +442,19 @@ img {
   }
   .cta-box {
     padding: 2rem 1.5rem;
+  }
+}
+
+/* Respeito à preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

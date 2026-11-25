@@ -1,4 +1,5 @@
 ---
+import WhatsAppIcon from './WhatsAppIcon.astro';
 import {
   SECTORS,
   getTripShareUrl,
@@ -16,17 +17,27 @@ const sector = SECTORS[trip.sector];
 const waUrl = getTripWhatsAppUrl(trip, 0);
 const shareUrl = getTripShareUrl(trip);
 const detailUrl = `/viagem/${trip.id}`;
+const displayTitle = trip.cardTitle ?? trip.title;
 ---
 
 <article
   class="trip-card"
   data-sector={trip.sector}
   data-month={trip.month}
+  data-modality={trip.modality}
+  data-search={`${trip.title} ${trip.destinationState} ${trip.month} ${trip.modality} ${trip.tag ?? ''} ${trip.summary}`.toLowerCase()}
 >
-  <a href={detailUrl} class="trip-media" style={`background: ${trip.gradient};`} aria-label={`Ver detalhes de ${trip.title}`}>
+  <a
+    href={detailUrl}
+    class="trip-media"
+    style={`background: ${trip.gradient};`}
+    aria-label={`Ver detalhes de ${trip.title}`}
+  >
     <img
       src={trip.image}
       alt={`Destino ${trip.title}`}
+      width="900"
+      height="563"
       loading="lazy"
       decoding="async"
       onerror="this.style.display='none'"
@@ -36,18 +47,18 @@ const detailUrl = `/viagem/${trip.id}`;
     <div class="trip-banner-top">
       <span class="trip-modality">
         {trip.modality === 'Aéreo' ? (
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
-            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
           </svg>
         ) : trip.modality === 'Bate-volta' ? (
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="12" rx="2"/>
-            <path d="M3 11h18M7 16v3M17 16v3"/>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="12" rx="2" />
+            <path d="M3 11h18M7 16v3M17 16v3" />
           </svg>
         )}
         {trip.modality} • {trip.destinationState}
@@ -67,8 +78,8 @@ const detailUrl = `/viagem/${trip.id}`;
         {sector.shortTitle}
       </a>
     )}
-    <h3 class="trip-title">
-      <a href={detailUrl}>{trip.title}</a>
+    <h3 class="trip-title" title={trip.title}>
+      <a href={detailUrl}>{displayTitle}</a>
     </h3>
     <p class="trip-summary">{trip.summary}</p>
 
@@ -79,21 +90,21 @@ const detailUrl = `/viagem/${trip.id}`;
     </ul>
 
     <div class="trip-footer">
+      <p class="trip-price-note">Valores e parcelamento sob consulta • Saída de Fortaleza</p>
+
       <a
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn-whatsapp trip-wa-btn"
       >
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-          <path d="M12.03 2C6.5 2 2 6.48 2 12c0 1.97.57 3.81 1.56 5.36L2 22l4.79-1.52A10 10 0 0 0 12.03 22C17.56 22 22 17.52 22 12S17.56 2 12.03 2zm5.82 14.12c-.25.7-1.45 1.34-2 1.42-.52.08-1.18.11-1.9-.12-.44-.14-1-.33-1.72-.64-3.03-1.31-5.01-4.38-5.16-4.58-.15-.2-1.23-1.64-1.23-3.13 0-1.49.78-2.22 1.06-2.52.28-.3.61-.38.81-.38h.59c.19 0 .44-.07.69.53.25.61.86 2.1.94 2.25.08.15.13.33.03.53-.1.2-.15.33-.3.5-.15.18-.32.4-.46.53-.15.15-.31.31-.13.61.18.3.79 1.3 1.7 2.11 1.17 1.04 2.16 1.36 2.46 1.51.3.15.48.13.66-.08.18-.2.76-.88.96-1.18.2-.3.4-.25.68-.15.28.1 1.77.83 2.07.98.3.15.5.23.58.36.08.13.08.76-.17 1.46z"/>
-        </svg>
-        Quero saber mais no WhatsApp
+        <WhatsAppIcon size={18} />
+        Consultar valores no WhatsApp
       </a>
 
       <div class="trip-secondary-actions">
         <a href={detailUrl} class="trip-detail-link">
-          Ver página do roteiro →
+          Ver detalhes do roteiro →
         </a>
         <a
           href={shareUrl}
@@ -104,11 +115,11 @@ const detailUrl = `/viagem/${trip.id}`;
           aria-label={`Compartilhar ${trip.title} no WhatsApp`}
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-            <circle cx="18" cy="5" r="3"/>
-            <circle cx="6" cy="12" r="3"/>
-            <circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
           Indicar
         </a>
@@ -141,7 +152,7 @@ const detailUrl = `/viagem/${trip.id}`;
     flex-direction: column;
     justify-content: space-between;
     aspect-ratio: 16 / 10;
-    min-height: 190px;
+    min-height: 196px;
     padding: 1rem 1.15rem;
     color: #ffffff;
     overflow: hidden;
@@ -158,7 +169,7 @@ const detailUrl = `/viagem/${trip.id}`;
   }
 
   .trip-card:hover .trip-media img {
-    transform: scale(1.06);
+    transform: scale(1.05);
   }
 
   .trip-media-overlay {
@@ -166,9 +177,9 @@ const detailUrl = `/viagem/${trip.id}`;
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(11, 41, 66, 0.62) 0%,
-      rgba(11, 41, 66, 0.18) 45%,
-      rgba(11, 41, 66, 0.84) 100%
+      rgba(11, 41, 66, 0.66) 0%,
+      rgba(11, 41, 66, 0.2) 45%,
+      rgba(11, 41, 66, 0.88) 100%
     );
     z-index: 1;
   }
@@ -190,38 +201,39 @@ const detailUrl = `/viagem/${trip.id}`;
   .trip-modality {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.74rem;
+    gap: 0.38rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    background: rgba(11, 41, 66, 0.72);
+    background: rgba(11, 41, 66, 0.78);
     backdrop-filter: blur(4px);
-    padding: 0.28rem 0.68rem;
+    padding: 0.3rem 0.72rem;
     border-radius: 999px;
   }
 
   .trip-tag {
-    font-size: 0.73rem;
+    font-size: 0.8rem;
     font-weight: 700;
     background: #ffffff;
-    color: var(--sb-red);
-    padding: 0.25rem 0.65rem;
+    color: var(--sb-red-dark);
+    padding: 0.28rem 0.7rem;
     border-radius: 999px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   }
 
   .trip-month {
     display: block;
-    font-size: 0.76rem;
+    font-size: 0.82rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.94);
   }
 
   .trip-dates {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.18rem;
     font-weight: 800;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
@@ -237,48 +249,64 @@ const detailUrl = `/viagem/${trip.id}`;
   .trip-sector-link {
     display: inline-block;
     align-self: flex-start;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sb-blue-action);
+    margin-bottom: 0.35rem;
+  }
+
+  .trip-sector-link:hover {
     color: var(--sb-blue-dark);
-    background: var(--sb-blue-soft);
-    padding: 0.22rem 0.65rem;
-    border-radius: 999px;
-    margin-bottom: 0.6rem;
+    text-decoration: underline;
   }
 
   .trip-title {
-    font-size: 1.16rem;
+    font-size: 1.18rem;
     font-weight: 800;
     color: var(--sb-blue-deep);
     margin-bottom: 0.55rem;
+    line-height: 1.28;
   }
 
   .trip-title a:hover {
-    color: var(--sb-blue);
+    color: var(--sb-blue-action);
   }
 
   .trip-summary {
-    font-size: 0.93rem;
+    font-size: 0.95rem;
     color: var(--sb-muted);
     margin-bottom: 1rem;
+    line-height: 1.55;
   }
 
   .trip-highlights {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.2rem;
+    margin: 0 0 1.15rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.42rem;
+    gap: 0.4rem 0.65rem;
   }
 
   .trip-highlights li {
-    font-size: 0.78rem;
+    position: relative;
+    padding-left: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 600;
     color: var(--sb-blue-dark);
-    background: #f1f5f9;
-    padding: 0.28rem 0.65rem;
-    border-radius: 8px;
+  }
+
+  .trip-highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sb-blue);
   }
 
   .trip-footer {
@@ -286,12 +314,21 @@ const detailUrl = `/viagem/${trip.id}`;
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .trip-price-note {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--sb-muted);
+    margin: 0;
   }
 
   .trip-wa-btn {
     width: 100%;
-    font-size: 0.9rem;
-    padding: 0.78rem 1rem;
+    font-size: 0.92rem;
+    padding: 0.8rem 1rem;
   }
 
   .trip-secondary-actions {
@@ -303,31 +340,31 @@ const detailUrl = `/viagem/${trip.id}`;
   }
 
   .trip-detail-link {
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    color: var(--sb-blue-dark);
+    color: var(--sb-blue-action);
   }
 
   .trip-detail-link:hover {
-    color: var(--sb-red);
+    color: var(--sb-red-dark);
     text-decoration: underline;
   }
 
   .trip-share-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.82rem;
+    gap: 0.38rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: var(--sb-muted);
-    background: #f1f5f9;
-    padding: 0.32rem 0.68rem;
+    color: var(--sb-blue-dark);
+    background: var(--sb-blue-soft);
+    padding: 0.36rem 0.78rem;
     border-radius: 999px;
     transition: background 0.15s ease, color 0.15s ease;
   }
 
   .trip-share-btn:hover {
-    background: var(--sb-blue-soft);
-    color: var(--sb-blue-dark);
+    background: #d8ecf9;
+    color: var(--sb-blue-deep);
   }
 </style>

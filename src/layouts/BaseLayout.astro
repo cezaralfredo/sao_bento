@@ -1,14 +1,31 @@
 ---
 import '../styles/global.css';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
 import { COMPANY, SECTOR_LIST, getWhatsAppUrl } from '../data/viagens';
 
 interface Props {
   title: string;
   description: string;
   currentPath?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  hideFloatingWaOnMobile?: boolean;
 }
 
-const { title, description, currentPath = '/' } = Astro.props;
+const {
+  title,
+  description,
+  currentPath = '/',
+  ogImage = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+  ogType = 'website',
+  hideFloatingWaOnMobile = false,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, COMPANY.siteUrl).toString();
+const resolvedOgImage = ogImage.startsWith('http')
+  ? ogImage
+  : new URL(ogImage, COMPANY.siteUrl).toString();
+
 const defaultWaUrl = getWhatsAppUrl(
   'Olá, São Bento Turismo! Vim pelo site e gostaria de saber mais sobre as próximas viagens e valores.'
 );
@@ -31,7 +48,22 @@ const navLinks = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/png" href="/images/logo-sao-bento.png" />
+
+    <!-- Open Graph / WhatsApp / Redes Sociais -->
+    <meta property="og:site_name" content={COMPANY.brandName} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -39,7 +71,9 @@ const navLinks = [
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class:list={[{ 'has-mobile-sticky-cta': hideFloatingWaOnMobile }]}>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
     <div class="topbar">
       <div class="container topbar-inner">
         <span>Saídas organizadas de <strong>Fortaleza - CE</strong> • Desde {COMPANY.foundedYear}</span>
@@ -67,6 +101,7 @@ const navLinks = [
           type="button"
           aria-label="Abrir menu de navegação"
           aria-expanded="false"
+          aria-controls="main-nav"
         >
           <span></span>
           <span></span>
@@ -74,27 +109,32 @@ const navLinks = [
         </button>
 
         <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
-          {navLinks.map((link) => (
-            <a
-              href={link.href}
-              class:list={['nav-link', { active: currentPath === link.href }]}
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = currentPath === link.href;
+            return (
+              <a
+                href={link.href}
+                class:list={['nav-link', { active: isActive }]}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            );
+          })}
           <a
             href={defaultWaUrl}
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn-whatsapp nav-cta"
           >
+            <WhatsAppIcon size={16} />
             Reservar no WhatsApp
           </a>
         </nav>
       </div>
     </header>
 
-    <main>
+    <main id="conteudo-principal">
       <slot />
     </main>
 
@@ -146,7 +186,11 @@ const navLinks = [
                 rel="noopener noreferrer"
                 class="footer-wa-btn"
               >
-                <span>WhatsApp:</span> <strong>{phone.display}</strong>
+                <span class="footer-wa-label">
+                  <WhatsAppIcon size={16} />
+                  WhatsApp:
+                </span>
+                <strong>{phone.display}</strong>
               </a>
             ))}
           </div>
@@ -168,19 +212,47 @@ const navLinks = [
       class="wa-float"
       aria-label="Falar com a São Bento Turismo no WhatsApp"
     >
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-        <path d="M12.03 2C6.5 2 2 6.48 2 12c0 1.97.57 3.81 1.56 5.36L2 22l4.79-1.52A10 10 0 0 0 12.03 22C17.56 22 22 17.52 22 12S17.56 2 12.03 2zm5.82 14.12c-.25.7-1.45 1.34-2 1.42-.52.08-1.18.11-1.9-.12-.44-.14-1-.33-1.72-.64-3.03-1.31-5.01-4.38-5.16-4.58-.15-.2-1.23-1.64-1.23-3.13 0-1.49.78-2.22 1.06-2.52.28-.3.61-.38.81-.38h.59c.19 0 .44-.07.69.53.25.61.86 2.1.94 2.25.08.15.13.33.03.53-.1.2-.15.33-.3.5-.15.18-.32.4-.46.53-.15.15-.31.31-.13.61.18.3.79 1.3 1.7 2.11 1.17 1.04 2.16 1.36 2.46 1.51.3.15.48.13.66-.08.18-.2.76-.88.96-1.18.2-.3.4-.25.68-.15.28.1 1.77.83 2.07.98.3.15.5.23.58.36.08.13.08.76-.17 1.46z"/>
-      </svg>
+      <WhatsAppIcon size={24} />
       <span>WhatsApp</span>
     </a>
 
     <script>
       const toggle = document.getElementById('menu-toggle');
       const nav = document.getElementById('main-nav');
+
+      function closeMenu() {
+        if (!toggle || !nav) return;
+        nav.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Abrir menu de navegação');
+      }
+
       if (toggle && nav) {
-        toggle.addEventListener('click', () => {
+        toggle.addEventListener('click', (event) => {
+          event.stopPropagation();
           const isOpen = nav.classList.toggle('open');
+          toggle.classList.toggle('open', isOpen);
           toggle.setAttribute('aria-expanded', String(isOpen));
+          toggle.setAttribute('aria-label', isOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação');
+        });
+
+        nav.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', closeMenu);
+        });
+
+        document.addEventListener('click', (event) => {
+          const target = event.target as Node | null;
+          if (nav.classList.contains('open') && target && !nav.contains(target) && !toggle.contains(target)) {
+            closeMenu();
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && nav.classList.contains('open')) {
+            closeMenu();
+            toggle.focus();
+          }
         });
       }
     </script>
@@ -190,8 +262,8 @@ const navLinks = [
 <style>
   .topbar {
     background: var(--sb-blue-deep);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.86rem;
     padding: 0.5rem 0;
   }
 
@@ -211,7 +283,7 @@ const navLinks = [
   }
 
   .topbar-phones a:hover {
-    color: #93c5fd;
+    color: var(--sb-warm-light);
     text-decoration: underline;
   }
 
@@ -229,9 +301,13 @@ const navLinks = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
+    gap: 1rem;
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
+  .brand {
+    flex-shrink: 0;
   }
 
   .brand img {
@@ -243,14 +319,14 @@ const navLinks = [
   .main-nav {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
   }
 
   .nav-link {
-    font-size: 0.92rem;
+    font-size: 0.91rem;
     font-weight: 600;
     color: var(--sb-blue-deep);
-    padding: 0.5rem 0.78rem;
+    padding: 0.48rem 0.72rem;
     border-radius: 999px;
     transition: background 0.15s ease, color 0.15s ease;
     white-space: nowrap;
@@ -262,14 +338,15 @@ const navLinks = [
   }
 
   .nav-link.active {
-    background: var(--sb-blue);
+    background: var(--sb-blue-action);
     color: #ffffff;
   }
 
   .nav-cta {
-    margin-left: 0.5rem;
-    padding: 0.62rem 1.1rem;
+    margin-left: 0.45rem;
+    padding: 0.6rem 1.05rem;
     font-size: 0.88rem;
+    white-space: nowrap;
   }
 
   .menu-toggle {
@@ -277,13 +354,19 @@ const navLinks = [
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border: 1px solid var(--sb-border);
     border-radius: 10px;
     background: #ffffff;
     cursor: pointer;
-    padding: 8px;
+    padding: 9px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .menu-toggle:hover {
+    border-color: var(--sb-blue-action);
+    background: var(--sb-blue-soft);
   }
 
   .menu-toggle span {
@@ -292,12 +375,26 @@ const navLinks = [
     width: 100%;
     background: var(--sb-blue-deep);
     border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: center;
+  }
+
+  .menu-toggle.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   /* Footer */
   .site-footer {
     background: var(--sb-blue-deep);
-    color: rgba(255, 255, 255, 0.86);
+    color: rgba(255, 255, 255, 0.9);
     padding-top: 4rem;
     margin-top: 2rem;
   }
@@ -323,19 +420,20 @@ const navLinks = [
   }
 
   .footer-tagline {
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 0.94rem;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.95rem;
   }
 
   .footer-legal {
-    font-size: 0.84rem;
-    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 0;
+    line-height: 1.6;
   }
 
   .site-footer h4 {
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 1.02rem;
     margin-bottom: 1rem;
   }
 
@@ -345,12 +443,12 @@ const navLinks = [
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.65rem;
   }
 
   .footer-links a {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.93rem;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.95rem;
     transition: color 0.15s ease;
   }
 
@@ -360,8 +458,8 @@ const navLinks = [
   }
 
   .footer-contact-note {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.84);
     margin-bottom: 0.9rem;
   }
 
@@ -375,13 +473,20 @@ const navLinks = [
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    gap: 0.65rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 12px;
-    padding: 0.7rem 1rem;
-    font-size: 0.92rem;
+    padding: 0.72rem 1rem;
+    font-size: 0.94rem;
     color: #ffffff;
     transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .footer-wa-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
   }
 
   .footer-wa-btn:hover {
@@ -390,10 +495,10 @@ const navLinks = [
   }
 
   .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
     padding: 1.25rem 0;
-    font-size: 0.84rem;
-    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.78);
   }
 
   .footer-bottom-inner {
@@ -416,10 +521,10 @@ const navLinks = [
     color: #ffffff;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     font-weight: 700;
-    font-size: 0.88rem;
-    padding: 0.72rem 1.05rem;
+    font-size: 0.9rem;
+    padding: 0.76rem 1.1rem;
     border-radius: 999px;
-    box-shadow: 0 10px 24px rgba(22, 114, 55, 0.34);
+    box-shadow: 0 10px 24px rgba(17, 96, 46, 0.36);
     transition: transform 0.16s ease, background 0.16s ease;
   }
 
@@ -428,14 +533,7 @@ const navLinks = [
     background: var(--sb-wa-dark);
   }
 
-  @media (max-width: 1080px) {
-    .wa-float span {
-      display: none;
-    }
-
-    .wa-float {
-      padding: 0.82rem;
-    }
+  @media (max-width: 1140px) {
     .menu-toggle {
       display: flex;
     }
@@ -452,20 +550,46 @@ const navLinks = [
       flex-direction: column;
       align-items: stretch;
       padding: 1rem 1.25rem 1.35rem;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
     .main-nav.open {
       display: flex;
     }
 
+    .nav-link {
+      padding: 0.68rem 1rem;
+      font-size: 0.98rem;
+    }
+
     .nav-cta {
       margin-left: 0;
       margin-top: 0.5rem;
+      padding: 0.8rem 1.25rem;
+      font-size: 0.95rem;
     }
 
     .footer-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wa-float span {
+      display: none;
+    }
+
+    .wa-float {
+      padding: 0.88rem;
+    }
+  }
+
+  @media (max-width: 960px) {
+    /* Evita colisão entre o botão flutuante e a barra fixa da página de viagem */
+    body.has-mobile-sticky-cta .wa-float {
+      display: none;
+    }
+
+    body.has-mobile-sticky-cta .site-footer {
+      padding-bottom: 5.5rem;
     }
   }
 
@@ -477,14 +601,6 @@ const navLinks = [
 
     .footer-grid {
       grid-template-columns: 1fr;
-    }
-
-    .wa-float span {
-      display: none;
-    }
-
-    .wa-float {
-      padding: 0.95rem;
     }
   }
 </style>

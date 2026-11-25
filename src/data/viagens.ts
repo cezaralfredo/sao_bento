@@ -24,6 +24,7 @@ export interface SectorInfo {
 export interface Trip {
   id: string;
   title: string;
+  cardTitle?: string;
   dates: string;
   month: string;
   monthOrder: number;
@@ -113,7 +114,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     tagline: 'Roteiros rodoviários completos pelos destinos mais desejados do Nordeste.',
     description:
       'Viagens de 3 a 6 dias com roteiro planejado, hospedagem selecionada e a animação de viajar em grupo pelos grandes clássicos nordestinos.',
-    heroGradient: 'linear-gradient(135deg, #0B2942 0%, #1B7FC1 55%, #D91E2A 100%)',
+    heroGradient: 'linear-gradient(135deg, #0B2942 0%, #0E4A73 55%, #1268A3 100%)',
     heroImage: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#0E4A73',
     highlights: [
@@ -137,7 +138,7 @@ export const SECTORS: Record<SectorSlug, SectorInfo> = {
     tagline: 'Roteiros de fé com acolhimento, organização e respeito à espiritualidade de cada grupo.',
     description:
       'As peregrinações fazem parte da nossa essência e da nossa razão social há 20 anos. Levamos fiéis, paróquias e famílias aos principais santuários do Nordeste e do Brasil.',
-    heroGradient: 'linear-gradient(135deg, #7F1219 0%, #D91E2A 55%, #1B7FC1 100%)',
+    heroGradient: 'linear-gradient(135deg, #5C0D14 0%, #991B1B 52%, #B91C1C 100%)',
     heroImage: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1200&q=80',
     badgeColor: '#D91E2A',
     highlights: [
@@ -199,7 +200,6 @@ export const TRIPS: Trip[] = [
     modality: 'Rodoviário',
     destinationState: 'CE',
     tag: 'Feriado da Consciência Negra',
-    featured: true,
     summary:
       'Aproveite o feriado no clima ameno do Maciço de Baturité, com mirantes, gastronomia serrana e passeios encantadores em Guaramiranga e Pacoti.',
     highlights: ['Clima de serra', 'Feriado prolongado', 'Ideal para famílias e casais'],
@@ -279,6 +279,7 @@ export const TRIPS: Trip[] = [
   {
     id: 'canoa-martins-thermas-dez-2026',
     title: 'Canoa Quebrada, Serra do Martins, Praia de Emanuela e Hotel Thermas',
+    cardTitle: 'Canoa Quebrada, Serra do Martins e Hotel Thermas',
     dates: '17 a 20 de Dezembro',
     month: 'Dezembro 2026',
     monthOrder: 2,
@@ -312,6 +313,7 @@ export const TRIPS: Trip[] = [
   {
     id: 'reveillon-2027-thermas',
     title: 'Réveillon 2027: Canoa Quebrada, Serra do Martins, Tibau, Mossoró e Hotel Thermas',
+    cardTitle: 'Réveillon 2027 • Litoral, Serra e Hotel Thermas',
     dates: '30/12 a 02/01',
     month: 'Dezembro 2026',
     monthOrder: 2,
@@ -459,6 +461,7 @@ export const TRIPS: Trip[] = [
   {
     id: 'circuito-fe-sp-mai-2027',
     title: 'Campos do Jordão, Aparecida, Guaratinguetá, Frei Galvão e Canção Nova',
+    cardTitle: 'Aparecida, Canção Nova, Frei Galvão e Campos do Jordão',
     dates: '17 a 22 de Maio',
     month: 'Maio 2027',
     monthOrder: 6,

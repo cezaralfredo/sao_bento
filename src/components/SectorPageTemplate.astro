@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TripCard from './TripCard.astro';
 import HowItWorks from './HowItWorks.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
 import {
   SECTOR_LIST,
   getTripsBySector,
@@ -21,12 +22,14 @@ const otherSectors = SECTOR_LIST.filter((s) => s.slug !== sector.slug);
 const sectorWaUrl = getWhatsAppUrl(
   `Olá, São Bento Turismo! Quero saber mais sobre os roteiros de "${sector.title}". Pode me enviar informações e valores?`
 );
+const tripsGridClass = trips.length === 2 ? 'grid-2' : 'grid-3';
 ---
 
 <BaseLayout
   title={sector.seoTitle}
   description={sector.seoDescription}
   currentPath={`/${sector.slug}`}
+  ogImage={sector.heroImage}
 >
   <section class="sector-hero" style={`background: ${sector.heroGradient};`}>
     <img
@@ -45,6 +48,7 @@ const sectorWaUrl = getWhatsAppUrl(
           Ver {trips.length} {trips.length === 1 ? 'roteiro programado' : 'roteiros programados'}
         </a>
         <a href={sectorWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
+          <WhatsAppIcon size={18} />
           Tirar dúvidas no WhatsApp
         </a>
       </div>
@@ -87,7 +91,7 @@ const sectorWaUrl = getWhatsAppUrl(
         </p>
       </div>
 
-      <div class="grid-3">
+      <div class={tripsGridClass}>
         {trips.map((trip) => (
           <TripCard trip={trip} />
         ))}
@@ -106,6 +110,7 @@ const sectorWaUrl = getWhatsAppUrl(
         </div>
         <div class="cta-box-actions">
           <a href={sectorWaUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            <WhatsAppIcon size={18} />
             Falar no WhatsApp agora
           </a>
           <a href="/calendario" class="btn btn-outline-light">
@@ -134,21 +139,23 @@ const sectorWaUrl = getWhatsAppUrl(
 <style>
   .extra-note {
     margin-top: 2rem;
-    background: var(--sb-red-soft);
-    border: 1px solid rgba(217, 30, 42, 0.22);
+    background: var(--sb-warm-soft);
+    border: 1px solid #fde68a;
+    border-left: 4px solid var(--sb-red);
     border-radius: var(--radius-md);
     padding: 1.5rem 1.75rem;
   }
 
   .extra-note h3 {
-    color: var(--sb-red-dark);
-    font-size: 1.12rem;
+    color: var(--sb-blue-deep);
+    font-size: 1.14rem;
     margin-bottom: 0.45rem;
   }
 
   .extra-note p {
     margin: 0;
     color: var(--sb-text);
+    font-size: 0.98rem;
   }
 
   .other-sectors {
@@ -168,36 +175,37 @@ const sectorWaUrl = getWhatsAppUrl(
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.16s ease, border-color 0.16s ease;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
   }
 
   .other-sector-card:hover {
     transform: translateY(-3px);
-    border-color: var(--sb-blue);
+    border-color: var(--sb-blue-action);
+    box-shadow: var(--shadow-md);
   }
 
   .other-eyebrow {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--sb-blue);
+    letter-spacing: 0.05em;
+    color: var(--sb-blue-action);
     margin-bottom: 0.4rem;
   }
 
   .other-sector-card h4 {
-    font-size: 1.12rem;
+    font-size: 1.14rem;
     margin-bottom: 0.45rem;
   }
 
   .other-sector-card p {
-    font-size: 0.92rem;
+    font-size: 0.94rem;
     flex: 1;
   }
 
   .other-link {
     font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--sb-red);
+    font-size: 0.92rem;
+    color: var(--sb-red-dark);
   }
 </style>

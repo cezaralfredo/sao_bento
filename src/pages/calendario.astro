@@ -1,24 +1,40 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TripCard from '../components/TripCard.astro';
-import { MONTHS, SECTOR_LIST, TRIPS, getWhatsAppUrl } from '../data/viagens';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import {
+  MONTHS,
+  SECTOR_LIST,
+  TRIPS,
+  getTripsBySector,
+  getWhatsAppUrl,
+} from '../data/viagens';
 
 const waListUrl = getWhatsAppUrl(
   'Olá, São Bento Turismo! Quero entrar na lista de novidades do WhatsApp para receber o calendário das próximas viagens.'
 );
+const modalities = ['Bate-volta', 'Rodoviário', 'Aéreo'] as const;
 ---
 
 <BaseLayout
   title="Calendário de Viagens 2026 / 2027 | São Bento Turismo"
   description="Confira todas as excursões, passeios no Ceará, viagens pelo Nordeste, peregrinações e pacotes aéreos da São Bento Turismo saindo de Fortaleza."
   currentPath="/calendario"
+  ogImage="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80"
 >
-  <section class="sector-hero" style="background: linear-gradient(135deg, #0B2942 0%, #1B7FC1 65%, #D91E2A 100%);">
+  <section class="sector-hero" style="background: linear-gradient(135deg, #0B2942 0%, #0E4A73 55%, #1268A3 100%);">
+    <img
+      src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1400&q=80"
+      alt=""
+      class="sector-hero-bg"
+      aria-hidden="true"
+      onerror="this.style.display='none'"
+    />
     <div class="container">
       <span class="hero-eyebrow-light">Agenda Oficial • Novembro 2026 a Maio 2027</span>
       <h1>Calendário Completo de Viagens</h1>
       <p>
-        Todas as {TRIPS.length} saídas confirmadas saindo de Fortaleza. Filtre por setor ou mês e clique em qualquer roteiro para receber valores e garantir sua vaga pelo WhatsApp.
+        Todas as {TRIPS.length} saídas confirmadas saindo de Fortaleza. Filtre por setor, mês, modalidade ou busque pelo destino desejado.
       </p>
     </div>
   </section>
@@ -26,34 +42,65 @@ const waListUrl = getWhatsAppUrl(
   <section class="section">
     <div class="container">
       <div class="filters-bar" aria-label="Filtros do calendário">
-        <div class="filter-group">
-          <span class="filter-label">Filtrar por setor:</span>
-          <div class="filter-pills" id="sector-filters">
-            <button type="button" class="filter-btn active" data-filter-sector="all">
+        <div class="filter-group filter-group-full">
+          <span class="filter-label">Setor de turismo:</span>
+          <div class="filter-pills" id="sector-filters" role="group" aria-label="Filtrar por setor">
+            <button type="button" class="filter-btn active" data-filter-sector="all" aria-pressed="true">
               Todos ({TRIPS.length})
             </button>
-            {SECTOR_LIST.map((sector) => (
-              <button type="button" class="filter-btn" data-filter-sector={sector.slug}>
-                {sector.shortTitle}
-              </button>
-            ))}
+            {SECTOR_LIST.map((sector) => {
+              const count = getTripsBySector(sector.slug).length;
+              return (
+                <button type="button" class="filter-btn" data-filter-sector={sector.slug} aria-pressed="false">
+                  {sector.shortTitle} ({count})
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div class="filter-group">
-          <label for="month-select" class="filter-label">Filtrar por mês:</label>
-          <select id="month-select" class="month-select">
-            <option value="all">Todos os meses</option>
-            {MONTHS.map((m) => (
-              <option value={m}>{m}</option>
-            ))}
-          </select>
+        <div class="filter-controls-row">
+          <div class="filter-field">
+            <label for="search-input" class="filter-label">Buscar destino:</label>
+            <input
+              id="search-input"
+              type="search"
+              class="filter-input"
+              placeholder="Ex.: Jericoacoara, Maragogi, Aparecida..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="filter-field">
+            <label for="month-select" class="filter-label">Mês da viagem:</label>
+            <select id="month-select" class="month-select">
+              <option value="all">Todos os meses</option>
+              {MONTHS.map((m) => (
+                <option value={m}>{m}</option>
+              ))}
+            </select>
+          </div>
+
+          <div class="filter-field">
+            <label for="modality-select" class="filter-label">Modalidade:</label>
+            <select id="modality-select" class="month-select">
+              <option value="all">Todas as modalidades</option>
+              {modalities.map((mod) => (
+                <option value={mod}>{mod}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      <p class="results-counter" id="results-counter">
-        Exibindo <strong>{TRIPS.length}</strong> viagens programadas
-      </p>
+      <div class="results-bar">
+        <p class="results-counter" id="results-counter" aria-live="polite">
+          Exibindo <strong>{TRIPS.length}</strong> viagens programadas
+        </p>
+        <button type="button" class="clear-filters-link" id="clear-filters-inline" hidden>
+          Limpar filtros
+        </button>
+      </div>
 
       <div class="grid-3" id="trips-grid">
         {TRIPS.map((trip) => (
@@ -63,7 +110,7 @@ const waListUrl = getWhatsAppUrl(
 
       <div class="empty-state" id="empty-state" hidden>
         <h3>Nenhuma viagem encontrada nessa combinação de filtros</h3>
-        <p>Tente selecionar "Todos os meses" ou outro setor de turismo.</p>
+        <p>Tente limpar a busca ou selecionar "Todos os meses" e "Todas as modalidades".</p>
         <button type="button" class="btn btn-blue" id="reset-filters">
           Mostrar todas as viagens
         </button>
@@ -82,6 +129,7 @@ const waListUrl = getWhatsAppUrl(
         </div>
         <div class="cta-box-actions">
           <a href={waListUrl} target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
+            <WhatsAppIcon size={18} />
             Receber novidades no WhatsApp
           </a>
         </div>
@@ -92,24 +140,28 @@ const waListUrl = getWhatsAppUrl(
   <script>
     const sectorButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter-sector]'));
     const monthSelect = document.getElementById('month-select') as HTMLSelectElement | null;
+    const modalitySelect = document.getElementById('modality-select') as HTMLSelectElement | null;
+    const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
     const cards = Array.from(document.querySelectorAll<HTMLElement>('#trips-grid .trip-card'));
     const counter = document.getElementById('results-counter');
     const emptyState = document.getElementById('empty-state');
     const resetBtn = document.getElementById('reset-filters');
+    const clearInlineBtn = document.getElementById('clear-filters-inline');
 
     let currentSector = 'all';
     let currentMonth = 'all';
+    let currentModality = 'all';
+    let currentQuery = '';
 
-    // Lê parâmetros da URL (vindos da barra de busca rápida da Home)
+    // Lê parâmetros da URL (vindos da Home ou do botão Voltar do navegador)
     const params = new URLSearchParams(window.location.search);
     const paramSector = params.get('setor');
     const paramMonth = params.get('mes');
+    const paramModality = params.get('modalidade');
+    const paramQuery = params.get('busca');
 
     if (paramSector && sectorButtons.some((b) => b.dataset.filterSector === paramSector)) {
       currentSector = paramSector;
-      sectorButtons.forEach((b) =>
-        b.classList.toggle('active', b.dataset.filterSector === currentSector)
-      );
     }
 
     if (paramMonth && monthSelect && Array.from(monthSelect.options).some((o) => o.value === paramMonth)) {
@@ -117,12 +169,43 @@ const waListUrl = getWhatsAppUrl(
       monthSelect.value = currentMonth;
     }
 
-    function applyFilters() {
+    if (paramModality && modalitySelect && Array.from(modalitySelect.options).some((o) => o.value === paramModality)) {
+      currentModality = paramModality;
+      modalitySelect.value = currentModality;
+    }
+
+    if (paramQuery && searchInput) {
+      currentQuery = paramQuery.trim().toLowerCase();
+      searchInput.value = paramQuery;
+    }
+
+    function syncSectorButtons() {
+      sectorButtons.forEach((b) => {
+        const isActive = b.dataset.filterSector === currentSector;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-pressed', String(isActive));
+      });
+    }
+
+    function syncUrl() {
+      const next = new URLSearchParams();
+      if (currentSector !== 'all') next.set('setor', currentSector);
+      if (currentMonth !== 'all') next.set('mes', currentMonth);
+      if (currentModality !== 'all') next.set('modalidade', currentModality);
+      if (currentQuery) next.set('busca', searchInput?.value.trim() ?? currentQuery);
+      const queryString = next.toString();
+      const targetUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+      window.history.replaceState(null, '', targetUrl);
+    }
+
+    function applyFilters(updateUrl = true) {
       let visible = 0;
       cards.forEach((card) => {
         const matchSector = currentSector === 'all' || card.dataset.sector === currentSector;
         const matchMonth = currentMonth === 'all' || card.dataset.month === currentMonth;
-        const show = matchSector && matchMonth;
+        const matchModality = currentModality === 'all' || card.dataset.modality === currentModality;
+        const matchSearch = !currentQuery || (card.dataset.search || '').includes(currentQuery);
+        const show = matchSector && matchMonth && matchModality && matchSearch;
         card.hidden = !show;
         if (show) visible++;
       });
@@ -133,35 +216,62 @@ const waListUrl = getWhatsAppUrl(
       if (emptyState) {
         emptyState.hidden = visible > 0;
       }
+
+      const hasActiveFilters =
+        currentSector !== 'all' ||
+        currentMonth !== 'all' ||
+        currentModality !== 'all' ||
+        currentQuery.length > 0;
+
+      if (clearInlineBtn) {
+        clearInlineBtn.hidden = !hasActiveFilters;
+      }
+
+      if (updateUrl) {
+        syncUrl();
+      }
     }
 
-    applyFilters();
+    function resetAllFilters() {
+      currentSector = 'all';
+      currentMonth = 'all';
+      currentModality = 'all';
+      currentQuery = '';
+      syncSectorButtons();
+      if (monthSelect) monthSelect.value = 'all';
+      if (modalitySelect) modalitySelect.value = 'all';
+      if (searchInput) searchInput.value = '';
+      applyFilters();
+    }
+
+    syncSectorButtons();
+    applyFilters(false);
 
     sectorButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        sectorButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
         currentSector = btn.dataset.filterSector || 'all';
+        syncSectorButtons();
         applyFilters();
       });
     });
 
-    if (monthSelect) {
-      monthSelect.addEventListener('change', () => {
-        currentMonth = monthSelect.value;
-        applyFilters();
-      });
-    }
+    monthSelect?.addEventListener('change', () => {
+      currentMonth = monthSelect.value;
+      applyFilters();
+    });
 
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        currentSector = 'all';
-        currentMonth = 'all';
-        sectorButtons.forEach((b) => b.classList.toggle('active', b.dataset.filterSector === 'all'));
-        if (monthSelect) monthSelect.value = 'all';
-        applyFilters();
-      });
-    }
+    modalitySelect?.addEventListener('change', () => {
+      currentModality = modalitySelect.value;
+      applyFilters();
+    });
+
+    searchInput?.addEventListener('input', () => {
+      currentQuery = searchInput.value.trim().toLowerCase();
+      applyFilters();
+    });
+
+    resetBtn?.addEventListener('click', resetAllFilters);
+    clearInlineBtn?.addEventListener('click', resetAllFilters);
   </script>
 </BaseLayout>
 
@@ -170,12 +280,10 @@ const waListUrl = getWhatsAppUrl(
     background: var(--sb-surface);
     border: 1px solid var(--sb-border);
     border-radius: var(--radius-md);
-    padding: 1.25rem 1.5rem;
+    padding: 1.35rem 1.5rem;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.15rem;
     box-shadow: var(--shadow-sm);
     margin-bottom: 1.5rem;
   }
@@ -187,8 +295,22 @@ const waListUrl = getWhatsAppUrl(
     flex-wrap: wrap;
   }
 
+  .filter-controls-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
   .filter-label {
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     font-weight: 700;
     color: var(--sb-blue-deep);
   }
@@ -201,51 +323,93 @@ const waListUrl = getWhatsAppUrl(
 
   .filter-btn {
     font-family: inherit;
-    font-size: 0.86rem;
+    font-size: 0.88rem;
     font-weight: 700;
-    padding: 0.5rem 0.95rem;
+    padding: 0.52rem 1rem;
     border-radius: 999px;
-    border: 1px solid var(--sb-border);
+    border: 1px solid #cbd5e1;
     background: #ffffff;
     color: var(--sb-blue-deep);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
 
   .filter-btn:hover {
-    border-color: var(--sb-blue);
+    border-color: var(--sb-blue-action);
     background: var(--sb-blue-soft);
   }
 
   .filter-btn.active {
-    background: var(--sb-blue);
-    border-color: var(--sb-blue);
+    background: var(--sb-blue-action);
+    border-color: var(--sb-blue-action);
     color: #ffffff;
   }
 
-  .month-select {
+  .month-select,
+  .filter-input {
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.94rem;
     font-weight: 600;
-    padding: 0.55rem 1rem;
+    padding: 0.68rem 0.95rem;
     border-radius: 10px;
-    border: 1px solid var(--sb-border);
-    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    background: var(--sb-bg);
     color: var(--sb-blue-deep);
+    width: 100%;
+  }
+
+  .month-select {
     cursor: pointer;
   }
 
-  .results-counter {
-    font-size: 0.95rem;
+  .filter-input::placeholder {
+    color: #64748b;
+    font-weight: 400;
+  }
+
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-bottom: 1.5rem;
+  }
+
+  .results-counter {
+    font-size: 0.96rem;
+    margin: 0;
+  }
+
+  .clear-filters-link {
+    background: none;
+    border: none;
+    padding: 0.35rem 0.7rem;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--sb-red-dark);
+    cursor: pointer;
+    border-radius: 999px;
+  }
+
+  .clear-filters-link:hover {
+    background: var(--sb-red-soft);
+    text-decoration: underline;
   }
 
   .empty-state {
     text-align: center;
     background: var(--sb-surface);
-    border: 1px dashed var(--sb-border);
+    border: 1px dashed #cbd5e1;
     border-radius: var(--radius-md);
     padding: 3rem 1.5rem;
     margin-top: 1rem;
+  }
+
+  @media (max-width: 860px) {
+    .filter-controls-row {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
